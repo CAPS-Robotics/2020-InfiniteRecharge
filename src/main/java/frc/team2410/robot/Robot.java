@@ -7,5 +7,11 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         Drivetrain.init();
+        Controllers.init();
+    }
+
+    @Override
+    public void teleopPeriodic() {
+        Drivetrain.loop();
     }
 }

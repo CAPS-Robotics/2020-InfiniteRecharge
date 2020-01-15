@@ -1,6 +1,7 @@
 package frc.team2410.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.Spark;
+import frc.team2410.robot.Controllers;
 import frc.team2410.robot.RobotMap;
 
 public class Drivetrain {
@@ -14,6 +15,10 @@ public class Drivetrain {
         leftMotorB = new Spark(RobotMap.LEFT_MOTOR_B);
         rightMotorA = new Spark(RobotMap.RIGHT_MOTOR_A);
         rightMotorB = new Spark(RobotMap.RIGHT_MOTOR_B);
+    }
+
+    public static void loop() {
+        drive(Controllers.getLeftYAxis(true), Controllers.getRightYAxis(true));
     }
 
     public static void driveForward(double speed) {
