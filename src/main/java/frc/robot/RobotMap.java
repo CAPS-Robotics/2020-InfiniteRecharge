@@ -1,4 +1,4 @@
-package frc.team2410.robot;
+package frc.robot;
 
 public class RobotMap {
     // Can IDs

@@ -1,7 +1,7 @@
-package frc.team2410.robot.Subsystems;
+package frc.robot.Subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import frc.team2410.robot.RobotMap;
+import frc.robot.RobotMap;
 
 public class Intake {
     private static WPI_TalonSRX motor;
