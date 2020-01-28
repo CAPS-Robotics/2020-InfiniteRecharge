@@ -2,17 +2,26 @@ package frc.robot.Subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Controllers;
+import frc.robot.MotionProfoling.Spline;
+import frc.robot.MotionProfoling.VelocityProfile;
 import frc.robot.RobotMap;
+
+import java.util.ArrayList;
 
 public class Drivetrain {
     private static final double GEARBOX_RATIO = 7;
     private static final double WHEEL_DIAMETER = 5;
+    private static Timer t;
 
     private static CANSparkMax leftMotorA;
     private static CANSparkMax leftMotorB;
     private static CANSparkMax rightMotorA;
     private static CANSparkMax rightMotorB;
+
+    private static boolean start = true;
 
     public static void init() {
         leftMotorA = new CANSparkMax(RobotMap.LEFT_MOTOR_A, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -39,6 +48,7 @@ public class Drivetrain {
     public static void driveForward(double speed) {
         setLeftSpeed(speed);
         setRightSpeed(speed);
+
     }
 
     public static void drive(double leftSpeed, double rightSpeed) {
