@@ -39,4 +39,8 @@ public class Controllers {
             return subsystemController.getRawAxis(4);
         }
     }
+    public static boolean getStartButton(boolean isDriveController) {
+        if(isDriveController) return driveController.getRawButton(8);
+        else return subsystemController.getRawButton(8);
+    }
 }

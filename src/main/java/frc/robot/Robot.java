@@ -29,5 +29,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Right Encoder", Drivetrain.getRightDistance());
         SmartDashboard.putNumber("Left Velocity", Drivetrain.getLeftVelocity());
         SmartDashboard.putNumber("Right Velocity", Drivetrain.getRightVelocity());
+        SmartDashboard.putNumber("Gyro Heading", Drivetrain.getHeading());
     }
 }
