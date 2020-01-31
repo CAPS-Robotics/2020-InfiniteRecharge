@@ -26,12 +26,11 @@ public class Drivetrain {
     private static CANSparkMax rightMotorB;
 
     private static PIDController gyroController;
+    private static boolean gyroTurn;
 
-    public static final double GYRO_P = 0.5;
-    public static final double GYRO_I = 0;
+    public static final double GYRO_P = 1/360d;
+    public static final double GYRO_I = 0; //.00125
     public static final double GYRO_D = 0;
-
-    private static boolean start = true;
 
     public static void init() {
         leftMotorA = new CANSparkMax(RobotMap.LEFT_MOTOR_A, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -53,22 +52,42 @@ public class Drivetrain {
         rightMotorA.getEncoder().setPosition(0);
 
         gyroController = new PIDController(GYRO_P, GYRO_I, GYRO_D, 0.002);
-        //gyroController.setIntegratorRange(-0.05, 0.05);
         gyroController.enableContinuousInput(-180, 180);
-        gyroController.setTolerance(5);
+        gyroController.setTolerance(3);
+        gyroTurn = false;
         resetGyro();
         setGyroHeading(getHeading());
     }
 
     public static void loop() {
-        drive(Controllers.getLeftYAxis(true), Controllers.getRightYAxis(true));
-        if(Controllers.getStartButton(true)) resetGyro();
-        if(Controllers.getAButton(true)) {
-            gyroController.setSetpoint(90);
-            setMotorSpeed();
+        //drive(Controllers.getLeftYAxis(true), Controllers.getRightYAxis(true));
+        //if (!gyroController.atSetpoint() && gyroTurn) {
+            //setTurnSpeed();
+        //} else if (gyroController.atSetpoint()) {
+            //gyroTurn = false;
+        //}
+        if (!gyroController.atSetpoint() && gyroTurn) {
+            setTurnSpeed();
+            gyroTurn = false;
+            //stop();
         }
-        SmartDashboard.putNumber("PID Output", gyroController.calculate(getHeading()) / (360 * GYRO_P));
+        if(Controllers.getStartButton(true)) resetGyro();
+        if(Controllers.getYButton(true)) {
+            setGyroHeading(0);
+        }
+        if(Controllers.getBButton(true)) {
+            setGyroHeading(90);
+        }
+        if(Controllers.getAButton(true)) {
+            setGyroHeading(180);
+        }
+        if(Controllers.getXButton(true)) {
+            setGyroHeading(-90);
+        }
+        SmartDashboard.putNumber("PID Output", gyroController.calculate(getHeading()));
         SmartDashboard.putNumber("PID Error", gyroController.getPositionError());
+        SmartDashboard.putNumber("PID Speed", gyroController.getVelocityError());
+        SmartDashboard.putBoolean("Gyro turn", gyroTurn);
     }
 
     public static void driveForward(double speed) {
@@ -114,10 +133,11 @@ public class Drivetrain {
 
     public static void setGyroHeading(double heading) {
         gyroController.setSetpoint(heading);
+        gyroTurn = true;
     }
     public static double getTargetHeading() { return gyroController.getSetpoint(); }
-    public static void setMotorSpeed() {
-        drive(-gyroController.calculate(getHeading()) / (360 * GYRO_P), gyroController.calculate(getHeading()) / (360 * GYRO_P));
+    public static void setTurnSpeed() {
+        drive(gyroController.calculate(getHeading()), -gyroController.calculate(getHeading()));
     }
 
     private static void setLeftSpeed(double speed) {

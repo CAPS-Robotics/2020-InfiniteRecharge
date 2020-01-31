@@ -48,4 +48,16 @@ public class Controllers {
         if(isDriveController) return driveController.getRawButton(1);
         else return subsystemController.getRawButton(1);
     }
+    public static boolean getBButton(boolean isDriveController) {
+        if(isDriveController) return driveController.getRawButton(2);
+        else return subsystemController.getRawButton(2);
+    }
+    public static boolean getXButton(boolean isDriveController) {
+        if(isDriveController) return driveController.getRawButton(3);
+        else return subsystemController.getRawButton(3);
+    }
+    public static boolean getYButton(boolean isDriveController) {
+        if(isDriveController) return driveController.getRawButton(4);
+        else return subsystemController.getRawButton(4);
+    }
 }
