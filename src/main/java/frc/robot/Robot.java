@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Subsystems.Drivetrain;
+import frc.robot.Subsystems.Vision;
 
 
 public class Robot extends TimedRobot {
@@ -11,6 +12,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         Drivetrain.init();
         Controllers.init();
+        Vision.init();
     }
 
     @Override
@@ -21,6 +23,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         Drivetrain.loop();
+        Vision.loop();
     }
 
     @Override

@@ -29,7 +29,7 @@ public class Drivetrain {
     private static boolean gyroTurn;
 
     public static final double GYRO_P = 1/360d;
-    public static final double GYRO_I = 0.00475;  //.004
+    public static final double GYRO_I = 1.5;  //1.5
     public static final double GYRO_D = 0;
 
     public static void init() {
@@ -53,7 +53,9 @@ public class Drivetrain {
 
         gyroController = new PIDController(GYRO_P, GYRO_I, GYRO_D, 0.002);
         gyroController.enableContinuousInput(-180, 180);
+        gyroController.setIntegratorRange(-0.05, 0.05);
         gyroController.setTolerance(3);
+
         gyroTurn = false;
         resetGyro();
         setGyroHeading(getHeading());
@@ -117,6 +119,10 @@ public class Drivetrain {
         gyroOffset = gyro.getFusedHeading();
         setGyroHeading(getHeading());
     }
+    public static boolean atAngle() {
+        return gyroController.atSetpoint();
+    }
+
     private static double wrapAngle(double angle) {
         if(angle > 180) {
             return -(360 - angle);
@@ -127,8 +133,8 @@ public class Drivetrain {
     }
 
     public static void setGyroHeading(double heading) {
-        gyroController.setSetpoint(heading);
         gyroController.reset();
+        gyroController.setSetpoint(heading);
         gyroTurn = true;
     }
     public static double getTargetHeading() { return gyroController.getSetpoint(); }
