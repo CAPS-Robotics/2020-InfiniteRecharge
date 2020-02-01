@@ -29,7 +29,7 @@ public class Drivetrain {
     private static boolean gyroTurn;
 
     public static final double GYRO_P = 1/360d;
-    public static final double GYRO_I = 0; //.00125
+    public static final double GYRO_I = 0.00475;  //.004
     public static final double GYRO_D = 0;
 
     public static void init() {
@@ -60,16 +60,11 @@ public class Drivetrain {
     }
 
     public static void loop() {
-        //drive(Controllers.getLeftYAxis(true), Controllers.getRightYAxis(true));
-        //if (!gyroController.atSetpoint() && gyroTurn) {
-            //setTurnSpeed();
-        //} else if (gyroController.atSetpoint()) {
-            //gyroTurn = false;
-        //}
+        drive(Controllers.getLeftYAxis(true), Controllers.getRightYAxis(true));
         if (!gyroController.atSetpoint() && gyroTurn) {
             setTurnSpeed();
+        } else if (gyroController.atSetpoint()) {
             gyroTurn = false;
-            //stop();
         }
         if(Controllers.getStartButton(true)) resetGyro();
         if(Controllers.getYButton(true)) {
@@ -133,6 +128,7 @@ public class Drivetrain {
 
     public static void setGyroHeading(double heading) {
         gyroController.setSetpoint(heading);
+        gyroController.reset();
         gyroTurn = true;
     }
     public static double getTargetHeading() { return gyroController.getSetpoint(); }

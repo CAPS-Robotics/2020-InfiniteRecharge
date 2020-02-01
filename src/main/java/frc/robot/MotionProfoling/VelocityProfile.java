@@ -3,7 +3,7 @@ package frc.robot.MotionProfoling;
 import java.util.ArrayList;
 
 public class VelocityProfile {
-    public static final double MAX_VELOCITY = 17;
+    public static final double MAX_VELOCITY = 17.9;
     public static final double MAX_ACCELERATION = 12;
     public static final double WHEELBASE = 1.75;
 
