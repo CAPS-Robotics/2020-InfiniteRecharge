@@ -14,6 +14,8 @@ import frc.robot.MotionProfoling.VelocityProfile;
 import frc.robot.RobotMap;
 import com.kauailabs.navx.frc.*;
 
+import java.util.ArrayList;
+
 public class Drivetrain {
     private static final double GEARBOX_RATIO = 7;
     private static final double WHEEL_DIAMETER = 5;
@@ -27,6 +29,9 @@ public class Drivetrain {
 
     private static PIDController gyroController;
     private static boolean gyroTurn;
+
+    private static Timer timer;
+    private static boolean autoPath;
 
     public static final double GYRO_P = 1/360d;
     public static final double GYRO_I = 1.5;  //1.5
@@ -59,28 +64,18 @@ public class Drivetrain {
         gyroTurn = false;
         resetGyro();
         setGyroHeading(getHeading());
+
+        timer = new Timer();
+        autoPath = false;
     }
 
     public static void loop() {
         drive(Controllers.getLeftYAxis(true), Controllers.getRightYAxis(true));
-        if (!gyroController.atSetpoint() && gyroTurn) {
-            setTurnSpeed();
-        } else if (gyroController.atSetpoint()) {
-            gyroTurn = false;
-        }
-        if(Controllers.getStartButton(true)) resetGyro();
-        if(Controllers.getYButton(true)) {
-            setGyroHeading(0);
-        }
-        if(Controllers.getBButton(true)) {
-            setGyroHeading(90);
-        }
-        if(Controllers.getAButton(true)) {
-            setGyroHeading(180);
-        }
-        if(Controllers.getXButton(true)) {
-            setGyroHeading(-90);
-        }
+        checkTurnButtons();
+        setTurnSpeed();
+        checkAutoPathButtons();
+        setAutoPathSpeed();
+
         SmartDashboard.putNumber("PID Output", gyroController.calculate(getHeading()));
         SmartDashboard.putNumber("PID Error", gyroController.getPositionError());
         SmartDashboard.putNumber("PID Speed", gyroController.getVelocityError());
@@ -114,6 +109,28 @@ public class Drivetrain {
     public static double getRightVelocity() {
         return rightMotorA.getEncoder().getVelocity() / 60 / GEARBOX_RATIO * (WHEEL_DIAMETER * Math.PI) / 12;
     }
+
+    public static void checkAutoPathButtons() {
+        if(Controllers.getLeftBumper(true) && !autoPath) {
+            ArrayList<Spline> path = new ArrayList<>();
+            path.add(new Spline(0, 0, 3, 5, 0, 0));
+            VelocityProfile.setPath(path);
+            timer.reset();
+            timer.start();
+            autoPath = true;
+        }
+    }
+    public static void setAutoPathSpeed() {
+        if(autoPath) {
+            VelocityProfile.calculateCurrentVelocities(timer.get());
+            drive(VelocityProfile.getCurrentLeftVelocity(), VelocityProfile.getCurrentRightVelocity());
+            if(timer.get() >= VelocityProfile.getPathTime()) autoPath = false;
+            SmartDashboard.putNumber("Left Velocity", VelocityProfile.getCurrentLeftVelocity());
+            SmartDashboard.putNumber("Right Velocity", VelocityProfile.getCurrentRightVelocity());
+            SmartDashboard.putBoolean("Auto Path", autoPath);
+        }
+    }
+
     public static double getHeading() { return wrapAngle(gyro.getFusedHeading() - gyroOffset); }
     public static void resetGyro() {
         gyroOffset = gyro.getFusedHeading();
@@ -132,6 +149,23 @@ public class Drivetrain {
         return angle;
     }
 
+    private static void checkTurnButtons() {
+        if(Controllers.getYButton(true)) {
+            setGyroHeading(0);
+        }
+        if(Controllers.getBButton(true)) {
+            setGyroHeading(90);
+        }
+        if(Controllers.getAButton(true)) {
+            setGyroHeading(180);
+        }
+        if(Controllers.getXButton(true)) {
+            setGyroHeading(-90);
+        }
+    }
+    public static void checkResetGyro() {
+        if(Controllers.getStartButton(true)) resetGyro();
+    }
     public static void setGyroHeading(double heading) {
         gyroController.reset();
         gyroController.setSetpoint(heading);
@@ -139,7 +173,11 @@ public class Drivetrain {
     }
     public static double getTargetHeading() { return gyroController.getSetpoint(); }
     public static void setTurnSpeed() {
-        drive(gyroController.calculate(getHeading()), -gyroController.calculate(getHeading()));
+        if (!gyroController.atSetpoint() && gyroTurn) {
+            drive(gyroController.calculate(getHeading()), -gyroController.calculate(getHeading()));
+        } else if (gyroController.atSetpoint()) {
+            gyroTurn = false;
+        }
     }
 
     private static void setLeftSpeed(double speed) {

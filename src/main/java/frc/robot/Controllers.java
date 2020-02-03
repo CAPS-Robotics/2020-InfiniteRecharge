@@ -60,4 +60,12 @@ public class Controllers {
         if(isDriveController) return driveController.getRawButton(4);
         else return subsystemController.getRawButton(4);
     }
+    public static boolean getLeftBumper(boolean isDriveController) {
+        if(isDriveController) return driveController.getRawButton(5);
+        else return subsystemController.getRawButton(5);
+    }
+    public static boolean getRightBumper(boolean isDriveController) {
+        if(isDriveController) return driveController.getRawButton(6);
+        else return subsystemController.getRawButton(6);
+    }
 }

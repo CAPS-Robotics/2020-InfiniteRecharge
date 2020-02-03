@@ -13,16 +13,15 @@ public class Vision {
 
         private static boolean autoRotating;
 
+        public static void init() {
+                table = NetworkTableInstance.getDefault().getTable("limelight");
+                autoRotating = false;
+        }
         public static void loop() {
                 if(autoRotating) {
                         turnToShoot();
                 }
                 SmartDashboard.putBoolean("Auto rotate", autoRotating);
-        }
-
-        public static void init() {
-                table = NetworkTableInstance.getDefault().getTable("limelight");
-                autoRotating = true;
         }
 
         public static double getDistance() {

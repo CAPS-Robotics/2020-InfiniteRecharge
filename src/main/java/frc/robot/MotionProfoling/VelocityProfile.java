@@ -14,6 +14,9 @@ public class VelocityProfile {
     private static double rightPathDistance;
     private static double pathTime;
 
+    private static double currentLeftVelocity;
+    private static double currentRightVelocity;
+
     private static int index = 1;
 
     private static ArrayList<Double> times;
@@ -21,7 +24,11 @@ public class VelocityProfile {
     private static ArrayList<Double> rightVelocities;
     private static ArrayList<Double> velocities;
 
-    public static void setPath(ArrayList<Spline> motionPath) { path = motionPath; }
+    public static void setPath(ArrayList<Spline> motionPath) {
+        path = motionPath;
+        calculateDistance();
+        calculateVelocities();
+    }
 
     public static void calculateDistance() {
         double distance = 0;
@@ -121,17 +128,17 @@ public class VelocityProfile {
         pathTime = time;
     }
 
-    public static ArrayList<Double> getCurrentVelocities(double time) {
+    public static void calculateCurrentVelocities(double time) {
         while (times.get(index) < time && index < 999) index++;
         System.out.println(index);
         double leftSlope = (leftVelocities.get(index) - leftVelocities.get(index - 1)) / (times.get(index) - times.get(index - 1));
         double rightSlope = (rightVelocities.get(index) - rightVelocities.get(index - 1)) / (times.get(index) - times.get(index - 1));
 
-        ArrayList<Double> currentVelocity = new ArrayList<>();
-        currentVelocity.add((time - times.get(index - 1)) * leftSlope + leftVelocities.get(index - 1));
-        currentVelocity.add((time - times.get(index - 1)) * rightSlope + rightVelocities.get(index - 1));
-        return currentVelocity;
+        currentLeftVelocity = (time - times.get(index - 1)) * leftSlope + leftVelocities.get(index - 1);
+        currentRightVelocity = (time - times.get(index - 1)) * rightSlope + rightVelocities.get(index - 1);
     }
+    public static double getCurrentLeftVelocity() { return currentLeftVelocity; }
+    public static double getCurrentRightVelocity() { return currentRightVelocity; }
 
     private static double calcMaxVelocity(double pVelocity, double distance) {
         return Math.sqrt(Math.pow(pVelocity, 2) + 2 * MAX_ACCELERATION * distance);
