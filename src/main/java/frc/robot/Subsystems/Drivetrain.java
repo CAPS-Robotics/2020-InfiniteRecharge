@@ -14,6 +14,7 @@ import frc.robot.MotionProfoling.VelocityProfile;
 import frc.robot.RobotMap;
 import com.kauailabs.navx.frc.*;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class Drivetrain {
@@ -30,8 +31,10 @@ public class Drivetrain {
     private static PIDController gyroController;
     private static boolean gyroTurn;
 
+    private static ArrayList<Spline> path;
     private static Timer timer;
     private static boolean autoPath;
+    private static boolean start;
 
     public static final double GYRO_P = 1/360d;
     public static final double GYRO_I = 1.5;  //1.5
@@ -70,7 +73,7 @@ public class Drivetrain {
     }
 
     public static void loop() {
-        drive(Controllers.getLeftYAxis(true), Controllers.getRightYAxis(true));
+        drive(Controllers.getDeadzone(Controllers.getLeftYAxis(true), 0.30), Controllers.getDeadzone(Controllers.getRightYAxis(true), 0.30));
         checkTurnButtons();
         setTurnSpeed();
         checkAutoPathButtons();
@@ -113,7 +116,7 @@ public class Drivetrain {
     public static void checkAutoPathButtons() {
         if(Controllers.getLeftBumper(true) && !autoPath) {
             ArrayList<Spline> path = new ArrayList<>();
-            path.add(new Spline(0, 0, 3, 5, 0, 0));
+            path.add(new Spline(0, 0, 3, 6, 0, 0));
             VelocityProfile.setPath(path);
             timer.reset();
             timer.start();
@@ -123,10 +126,10 @@ public class Drivetrain {
     public static void setAutoPathSpeed() {
         if(autoPath) {
             VelocityProfile.calculateCurrentVelocities(timer.get());
-            drive(VelocityProfile.getCurrentLeftVelocity(), VelocityProfile.getCurrentRightVelocity());
+            drive(VelocityProfile.getCurrentLeftVelocity() / VelocityProfile.MAX_VELOCITY, VelocityProfile.getCurrentRightVelocity() / VelocityProfile.MAX_VELOCITY);
             if(timer.get() >= VelocityProfile.getPathTime()) autoPath = false;
-            SmartDashboard.putNumber("Left Velocity", VelocityProfile.getCurrentLeftVelocity());
-            SmartDashboard.putNumber("Right Velocity", VelocityProfile.getCurrentRightVelocity());
+            SmartDashboard.putNumber("Left Path Velocity", VelocityProfile.getCurrentLeftVelocity());
+            SmartDashboard.putNumber("Right Path Velocity", VelocityProfile.getCurrentRightVelocity());
             SmartDashboard.putBoolean("Auto Path", autoPath);
         }
     }

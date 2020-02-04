@@ -28,6 +28,7 @@ public class VelocityProfile {
         path = motionPath;
         calculateDistance();
         calculateVelocities();
+        index = 1;
     }
 
     public static void calculateDistance() {
