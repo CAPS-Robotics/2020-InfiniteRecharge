@@ -86,6 +86,9 @@ public class Spline {
     public double getCurvature(double t) {
         return (getdx(t) * getddy(t) - getdy(t) * getddx(t)) / Math.pow(Math.pow(getdx(t), 2) + Math.pow(getdy(t), 2), 1.5);
     }
+    public double getAngle(double t) {
+        return Math.toDegrees(Math.atan(getdydx(t))) * -1;
+    }
     public double getCurvatureSum() {
         double sum = 0;
         for(double t = 0; t <= 1; t += 0.01) {
