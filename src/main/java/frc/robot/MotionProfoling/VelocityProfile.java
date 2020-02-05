@@ -12,6 +12,7 @@ public class VelocityProfile {
     private static double pathDistance;
     private static double leftPathDistance;
     private static double rightPathDistance;
+
     private static double pathTime;
 
     private static double currentLeftVelocity;
