@@ -36,6 +36,8 @@ public class Drivetrain {
     private static CANSparkMax rightMotorA;
     private static CANSparkMax rightMotorB;
 
+    private static double leftOffset;
+
     private static PIDController gyroController;
 
     private static ArrayList<Spline> path;
@@ -126,7 +128,7 @@ public class Drivetrain {
     public static void checkAutoPathButtons() {
         if(Controllers.getLeftBumper(true) && driveMode != DRIVE_MODE.MOTION_DRIVE) {
             ArrayList<Spline> path = new ArrayList<>();
-            path.add(new Spline(0, 0, 20, 7, 0, 0));
+            path.add(new Spline(0, 0, 7, 15, 0, 135));
             VelocityProfile.setPath(path);
             timer.reset();
             timer.start();
@@ -137,7 +139,7 @@ public class Drivetrain {
         if(driveMode == DRIVE_MODE.MOTION_DRIVE) {
             VelocityProfile.calculateCurrentVelocities(timer.get());
             drive(VelocityProfile.getCurrentLeftVelocity() / VelocityProfile.MAX_VELOCITY + getFeedbackTerm(VelocityProfile.getCurrentLeftVelocity(), getLeftVelocity(), true), VelocityProfile.getCurrentRightVelocity() / VelocityProfile.MAX_VELOCITY + getFeedbackTerm(VelocityProfile.getCurrentRightVelocity(), getRightVelocity(), false));
-            if(timer.get() >= VelocityProfile.getPathTime()) driveMode = DRIVE_MODE.CONTROLLER_DRIVE;
+            if(VelocityProfile.getPathTime() - timer.get() <= 0) driveMode = DRIVE_MODE.CONTROLLER_DRIVE;
             SmartDashboard.putNumber("Left Path Velocity", VelocityProfile.getCurrentLeftVelocity());
             SmartDashboard.putNumber("Right Path Velocity", VelocityProfile.getCurrentRightVelocity());
             SmartDashboard.putNumber("Path Time", VelocityProfile.getPathTime());
@@ -146,7 +148,7 @@ public class Drivetrain {
         }
     }
     private static double getFeedbackTerm(double pathVelocity, double currentVelocity, boolean left) {
-         return ((pathVelocity - currentVelocity) / (VelocityProfile.MAX_VELOCITY)) + ((getHeading() - (VelocityProfile.getCurrentAngle())) / 180 * (left ? -1 : 1));
+        return ((pathVelocity - currentVelocity) / (VelocityProfile.MAX_VELOCITY)) + ((getHeading() - (VelocityProfile.getCurrentAngle())) / 180 * (left ? -1 : 1));
     }
 
     public static double getHeading() { return wrapAngle(gyro.getFusedHeading() - gyroOffset); }
