@@ -12,8 +12,8 @@ public class Spline {
         this.y1 = -x1;
         this.theta0 = -theta0;
         this.theta1 = -theta1;
-        scale = 1.2 * Math.sqrt(Math.pow(x1 - x0, 2) + Math.pow(y1 - y0, 2));
 
+        scale = 1.2 * Math.sqrt(Math.pow(x1 - x0, 2) + Math.pow(y1 - y0, 2));
         calculateCoefficients();
     }
 
@@ -87,13 +87,6 @@ public class Spline {
         return (getdx(t) * getddy(t) - getdy(t) * getddx(t)) / Math.pow(Math.pow(getdx(t), 2) + Math.pow(getdy(t), 2), 1.5);
     }
     public double getAngle(double t) {
-        return Math.toDegrees(Math.atan(getdydx(t))) * -1;
-    }
-    public double getCurvatureSum() {
-        double sum = 0;
-        for(double t = 0; t <= 1; t += 0.01) {
-            sum += getCurvature(t);
-        }
-        return sum;
+        return Math.toDegrees(Math.atan(getdydx(t))) * (Math.toDegrees(Math.atan(getdydx(t))) < 0 ? -1 : 1);
     }
 }

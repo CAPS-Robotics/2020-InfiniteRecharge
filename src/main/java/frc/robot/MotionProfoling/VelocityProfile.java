@@ -6,6 +6,7 @@ public class VelocityProfile {
     public static final double MAX_VELOCITY = 17.9;
     public static final double MAX_ACCELERATION = 12;
     public static final double WHEELBASE = 1.75;
+    public static final double dt = 0.005;
 
     private static ArrayList<Spline> path = new ArrayList<>();
 
@@ -40,10 +41,10 @@ public class VelocityProfile {
         double rightDistance = 0;
 
         for(Spline spline : path) {
-            for(double t = 0; t <= 1; t += 0.001) {
-                distance += Math.sqrt(Math.pow(spline.getdx(t), 2) + Math.pow(spline.getdy(t), 2)) * 0.001;
-                leftDistance += Math.sqrt((Math.pow((spline.getLeftPosY(t) - spline.getLeftPosY(t + 0.001)) / (spline.getLeftPosX(t) - spline.getLeftPosX(t + 0.001)), 2) + 1)) * Math.abs(spline.getLeftPosX(t) - spline.getLeftPosX(t + 0.001));
-                rightDistance += Math.sqrt((Math.pow((spline.getRightPosY(t) - spline.getRightPosY(t + 0.001)) / (spline.getRightPosX(t) - spline.getRightPosX(t + 0.001)), 2) + 1)) * Math.abs(spline.getRightPosX(t) - spline.getRightPosX(t + 0.001));
+            for(double t = 0; t <= 1; t += dt) {
+                distance += Math.sqrt(Math.pow(spline.getdx(t), 2) + Math.pow(spline.getdy(t), 2)) * dt;
+                leftDistance += Math.sqrt((Math.pow((spline.getLeftPosY(t) - spline.getLeftPosY(t + dt)) / (spline.getLeftPosX(t) - spline.getLeftPosX(t + dt)), 2) + 1)) * Math.abs(spline.getLeftPosX(t) - spline.getLeftPosX(t + dt));
+                rightDistance += Math.sqrt((Math.pow((spline.getRightPosY(t) - spline.getRightPosY(t + dt)) / (spline.getRightPosX(t) - spline.getRightPosX(t + dt)), 2) + 1)) * Math.abs(spline.getRightPosX(t) - spline.getRightPosX(t + dt));
             }
         }
         pathDistance = distance;
@@ -69,10 +70,10 @@ public class VelocityProfile {
         boolean decelerating = false;
 
         for(Spline spline : path) {
-            for(double t = 0; t <= 1; t += 0.001) {
-                double dDistance = Math.sqrt(Math.pow(spline.getdx(t), 2) + Math.pow(spline.getdy(t), 2)) * 0.001;
-                double dLeftDistance = Math.sqrt((Math.pow((spline.getLeftPosY(t) - spline.getLeftPosY(t + 0.001)) / (spline.getLeftPosX(t) - spline.getLeftPosX(t + 0.001)), 2) + 1)) * Math.abs(spline.getLeftPosX(t) - spline.getLeftPosX(t + 0.001));
-                double dRightDistance = Math.sqrt((Math.pow((spline.getRightPosY(t) - spline.getRightPosY(t + 0.001)) / (spline.getRightPosX(t) - spline.getRightPosX(t + 0.001)), 2) + 1)) * Math.abs(spline.getRightPosX(t) - spline.getRightPosX(t + 0.001));
+            for(double t = 0; t <= 1; t += dt) {
+                double dDistance = Math.sqrt(Math.pow(spline.getdx(t), 2) + Math.pow(spline.getdy(t), 2)) * dt;
+                double dLeftDistance = Math.sqrt((Math.pow((spline.getLeftPosY(t) - spline.getLeftPosY(t + dt)) / (spline.getLeftPosX(t) - spline.getLeftPosX(t + dt)), 2) + 1)) * Math.abs(spline.getLeftPosX(t) - spline.getLeftPosX(t + dt));
+                double dRightDistance = Math.sqrt((Math.pow((spline.getRightPosY(t) - spline.getRightPosY(t + dt)) / (spline.getRightPosX(t) - spline.getRightPosX(t + dt)), 2) + 1)) * Math.abs(spline.getRightPosX(t) - spline.getRightPosX(t + dt));
 
                 leftDistance += dLeftDistance;
                 rightDistance += dRightDistance;
@@ -135,7 +136,7 @@ public class VelocityProfile {
     }
 
     public static void calculateCurrentVelocities(double time) {
-        while (times.get(index) < time && index < 999) index++;
+        while (times.get(index) < time && index < ((1/dt) * path.size() - 1)) index++;
         double leftSlope = (leftVelocities.get(index) - leftVelocities.get(index - 1)) / (times.get(index) - times.get(index - 1));
         double rightSlope = (rightVelocities.get(index) - rightVelocities.get(index - 1)) / (times.get(index) - times.get(index - 1));
 
@@ -170,4 +171,5 @@ public class VelocityProfile {
     public static ArrayList<Double> getLeftVelocities() { return leftVelocities; }
     public static ArrayList<Double> getRightVelocities() { return rightVelocities; }
     public static ArrayList<Double> getVelocities() { return velocities; }
+    public static ArrayList<Spline> getPath() { return path; }
 }
