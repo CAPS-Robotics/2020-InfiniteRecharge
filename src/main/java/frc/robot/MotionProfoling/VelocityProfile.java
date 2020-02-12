@@ -1,5 +1,7 @@
 package frc.robot.MotionProfoling;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.util.ArrayList;
 
 public class VelocityProfile {
@@ -129,6 +131,7 @@ public class VelocityProfile {
                 velocities.add(velocity);
                 leftVelocities.add(leftVelocity);
                 rightVelocities.add(rightVelocity);
+
                 angles.add(spline.getAngle(t));
             }
         }

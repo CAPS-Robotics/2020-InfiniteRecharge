@@ -1,5 +1,7 @@
 package frc.robot.MotionProfoling;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Spline {
     double x0, y0, x1, y1, theta0, theta1;
     double ax, bx, cx, dx, ex, fx, ay, by, cy, dy, ey, fy;
@@ -87,6 +89,13 @@ public class Spline {
         return (getdx(t) * getddy(t) - getdy(t) * getddx(t)) / Math.pow(Math.pow(getdx(t), 2) + Math.pow(getdy(t), 2), 1.5);
     }
     public double getAngle(double t) {
-        return Math.toDegrees(Math.atan(getdydx(t))) * (Math.toDegrees(Math.atan(getdydx(t))) < 0 ? -1 : 1);
+        double angle = Math.toDegrees(Math.atan(getdydx(t))) * -1;
+        if(getdx(t) < 0 && getdy(t) < 0) {
+            return 90 + Math.abs(angle);
+        } else if(getdx(t) < 0 && getdy(t) > 0) {
+            return -90 - Math.abs(angle);
+        }
+
+        return angle;
     }
 }

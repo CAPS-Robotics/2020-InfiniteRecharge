@@ -121,7 +121,7 @@ public class Drivetrain {
             Timer processing = new Timer();
             processing.start();
             ArrayList<Spline> path = new ArrayList<>();
-            path.add(new Spline(0, 0, 5, 5, 0, 90));
+            path.add(new Spline(0, 0, -5, 5, 0, -135));
             VelocityProfile.setPath(path);
             SmartDashboard.putNumber("Processing Time", processing.get());
             timer.reset();
