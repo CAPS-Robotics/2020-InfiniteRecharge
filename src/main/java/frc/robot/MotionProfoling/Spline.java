@@ -5,13 +5,13 @@ public class Spline {
     double ax, bx, cx, dx, ex, fx, ay, by, cy, dy, ey, fy;
     double scale;
 
-    public Spline(double x0, double y0, double x1, double y1, double theta0, double theta1) {
-        this.x0 = x0;
-        this.y0 = y0;
-        this.x1 = x1;
-        this.y1 = y1;
-        this.theta0 = -theta0 + 90;
-        this.theta1 = -theta1 + 90;
+    public Spline(Point p0, Point p1) {
+        this.x0 = p0.getX();
+        this.y0 = p0.getY();
+        this.theta0 = p0.getTheta();
+        this.x1 = p1.getX();
+        this.y1 = p1.getY();
+        this.theta1 = p1.getTheta();
 
         scale = 1.2 * Math.sqrt(Math.pow(x1 - x0, 2) + Math.pow(y1 - y0, 2));
         calculateCoefficients();
@@ -94,6 +94,7 @@ public class Spline {
         } else if(getdx(t) < 0 && getdy(t) < 0) {
             return -180 + Math.abs(angle);
         }
+
         return angle;
     }
 }

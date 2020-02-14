@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Controllers;
+import frc.robot.MotionProfoling.Point;
 import frc.robot.MotionProfoling.Spline;
 import frc.robot.MotionProfoling.VelocityProfile;
 import frc.robot.RobotMap;
@@ -120,9 +121,11 @@ public class Drivetrain {
         if(Controllers.getLeftBumper(true) && driveMode != DRIVE_MODE.MOTION_DRIVE) {
             Timer processing = new Timer();
             processing.start();
-            ArrayList<Spline> path = new ArrayList<>();
-            path.add(new Spline(0, 0, 10, 20, 0, 90));
-            VelocityProfile.setPath(path);
+            VelocityProfile.reset();
+            VelocityProfile.addWaypoint(new Point(0, 0, 0));
+            VelocityProfile.addWaypoint(new Point(5, 6, 90));
+            VelocityProfile.addWaypoint(new Point(10, 15, 135));
+            VelocityProfile.generatePath();
             SmartDashboard.putNumber("Processing Time", processing.get());
             timer.reset();
             timer.start();

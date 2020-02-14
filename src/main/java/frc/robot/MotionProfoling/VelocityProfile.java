@@ -8,6 +8,7 @@ public class VelocityProfile {
     public static final double WHEELBASE = 1.75;
     public static final double dt = 0.001;
 
+    private static ArrayList<Point> points = new ArrayList<>();
     private static ArrayList<Spline> path = new ArrayList<>();
 
     private static double pathDistance;
@@ -28,14 +29,27 @@ public class VelocityProfile {
     private static ArrayList<Double> velocities;
     private static ArrayList<Double> angles;
 
-    public static void setPath(ArrayList<Spline> motionPath) {
-        path = motionPath;
+    public static void generatePath() {
+        setPath();
         calculateDistance();
         calculateVelocities();
+    }
+
+    public static void addWaypoint(Point p) { points.add(p); }
+
+    private static void setPath() {
+        for(int i = 0; i < points.size() - 1; i++) {
+            path.add(new Spline(points.get(i), points.get(i + 1)));
+        }
+    }
+
+    public static void reset() {
+        points = new ArrayList<>();
+        path = new ArrayList<>();
         index = 1;
     }
 
-    public static void calculateDistance() {
+    private static void calculateDistance() {
         double distance = 0;
         double leftDistance = 0;
         double rightDistance = 0;
@@ -55,7 +69,7 @@ public class VelocityProfile {
     public static double getPathDistance() { return pathDistance; }
     public static double getPathTime() { return pathTime; }
 
-    public static void calculateVelocities() {
+    private static void calculateVelocities() {
         times = new ArrayList<>();
         leftVelocities = new ArrayList<>();
         rightVelocities = new ArrayList<>();
@@ -130,6 +144,8 @@ public class VelocityProfile {
                 leftVelocities.add(leftVelocity);
                 rightVelocities.add(rightVelocity);
                 angles.add(spline.getAngle(t));
+
+                System.out.println(spline.getAngle(t));
             }
         }
         pathTime = time;
