@@ -121,7 +121,7 @@ public class Drivetrain {
             Timer processing = new Timer();
             processing.start();
             ArrayList<Spline> path = new ArrayList<>();
-            path.add(new Spline(0, 0, -5, 5, 0, -135));
+            path.add(new Spline(0, 0, 10, 20, 0, 90));
             VelocityProfile.setPath(path);
             SmartDashboard.putNumber("Processing Time", processing.get());
             timer.reset();
@@ -139,8 +139,9 @@ public class Drivetrain {
         }
     }
     private static double getFeedbackTerm(double pathVelocity, double currentVelocity, boolean left) {
-        return 0.15 * ((pathVelocity - currentVelocity) / (VelocityProfile.MAX_VELOCITY)) + 0.15 * ((getHeading() - (VelocityProfile.getCurrentAngle())) / 180 * (left ? -1 : 1));
+        return 0.15 * ((pathVelocity - currentVelocity) / (VelocityProfile.MAX_VELOCITY)) + 0.3 * ((getHeading() - (VelocityProfile.getCurrentAngle())) / 180 * (left ? -1 : 1));
     }
+
 
     public static double getHeading() { return wrapAngle(gyro.getFusedHeading() - gyroOffset); }
     public static void resetGyro() {

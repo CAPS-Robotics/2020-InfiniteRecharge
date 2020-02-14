@@ -1,19 +1,17 @@
 package frc.robot.MotionProfoling;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 public class Spline {
     double x0, y0, x1, y1, theta0, theta1;
     double ax, bx, cx, dx, ex, fx, ay, by, cy, dy, ey, fy;
     double scale;
 
     public Spline(double x0, double y0, double x1, double y1, double theta0, double theta1) {
-        this.x0 = y0;
-        this.y0 = -x0;
-        this.x1 = y1;
-        this.y1 = -x1;
-        this.theta0 = -theta0;
-        this.theta1 = -theta1;
+        this.x0 = x0;
+        this.y0 = y0;
+        this.x1 = x1;
+        this.y1 = y1;
+        this.theta0 = -theta0 + 90;
+        this.theta1 = -theta1 + 90;
 
         scale = 1.2 * Math.sqrt(Math.pow(x1 - x0, 2) + Math.pow(y1 - y0, 2));
         calculateCoefficients();
@@ -89,13 +87,13 @@ public class Spline {
         return (getdx(t) * getddy(t) - getdy(t) * getddx(t)) / Math.pow(Math.pow(getdx(t), 2) + Math.pow(getdy(t), 2), 1.5);
     }
     public double getAngle(double t) {
-        double angle = Math.toDegrees(Math.atan(getdydx(t))) * -1;
-        if(getdx(t) < 0 && getdy(t) < 0) {
-            return 90 + Math.abs(angle);
-        } else if(getdx(t) < 0 && getdy(t) > 0) {
-            return -90 - Math.abs(angle);
+        double angle = Math.toDegrees(Math.atan(getdydx(t)));
+        angle = angle > 0 ? 90 - angle : (90 + angle) * -1;
+        if(getdx(t) > 0 && getdy(t) < 0) {
+            return 180 - Math.abs(angle);
+        } else if(getdx(t) < 0 && getdy(t) < 0) {
+            return -180 + Math.abs(angle);
         }
-
         return angle;
     }
 }
