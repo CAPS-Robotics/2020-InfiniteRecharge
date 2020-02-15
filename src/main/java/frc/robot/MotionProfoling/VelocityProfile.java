@@ -35,7 +35,7 @@ public class VelocityProfile {
         calculateVelocities();
     }
 
-    public static void addWaypoint(Point p) { points.add(p); }
+    public static void addWaypoint(double x, double y, double theta) { points.add(new Point(x, y, theta)); }
 
     private static void setPath() {
         for(int i = 0; i < points.size() - 1; i++) {
@@ -155,10 +155,11 @@ public class VelocityProfile {
         while (times.get(index) < time && index < ((1/dt) * path.size() - 1)) index++;
         double leftSlope = (leftVelocities.get(index) - leftVelocities.get(index - 1)) / (times.get(index) - times.get(index - 1));
         double rightSlope = (rightVelocities.get(index) - rightVelocities.get(index - 1)) / (times.get(index) - times.get(index - 1));
+        double angleSlope = (angles.get(index) - angles.get(index - 1)) / (times.get(index) - times.get(index - 1));
 
         currentLeftVelocity = (time - times.get(index - 1)) * leftSlope + leftVelocities.get(index - 1);
         currentRightVelocity = (time - times.get(index - 1)) * rightSlope + rightVelocities.get(index - 1);
-        currentAngle = angles.get(index);
+        currentAngle = (time - times.get(index - 1)) * angleSlope + angles.get(index - 1);
     }
     public static double getCurrentLeftVelocity() { return currentLeftVelocity; }
     public static double getCurrentRightVelocity() { return currentRightVelocity; }

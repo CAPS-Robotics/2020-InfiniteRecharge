@@ -122,9 +122,8 @@ public class Drivetrain {
             Timer processing = new Timer();
             processing.start();
             VelocityProfile.reset();
-            VelocityProfile.addWaypoint(new Point(0, 0, 0));
-            VelocityProfile.addWaypoint(new Point(5, 6, 90));
-            VelocityProfile.addWaypoint(new Point(10, 15, 135));
+            VelocityProfile.addWaypoint(0, 0, 0);
+            VelocityProfile.addWaypoint(10, 15, 45);
             VelocityProfile.generatePath();
             SmartDashboard.putNumber("Processing Time", processing.get());
             timer.reset();
@@ -142,7 +141,7 @@ public class Drivetrain {
         }
     }
     private static double getFeedbackTerm(double pathVelocity, double currentVelocity, boolean left) {
-        return 0.15 * ((pathVelocity - currentVelocity) / (VelocityProfile.MAX_VELOCITY)) + 0.3 * ((getHeading() - (VelocityProfile.getCurrentAngle())) / 180 * (left ? -1 : 1));
+        return 0.2 * ((pathVelocity - currentVelocity) / (VelocityProfile.MAX_VELOCITY)) + 0.35 * ((getHeading() - (VelocityProfile.getCurrentAngle())) / 180 * (left ? -1 : 1));
     }
 
 
