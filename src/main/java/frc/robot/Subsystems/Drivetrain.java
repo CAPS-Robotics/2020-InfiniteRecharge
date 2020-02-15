@@ -122,9 +122,9 @@ public class Drivetrain {
             Timer processing = new Timer();
             processing.start();
             VelocityProfile.reset();
-            VelocityProfile.addWaypoint(0, 0, 0);
-            VelocityProfile.addWaypoint(10, 15, 45);
-            VelocityProfile.generatePath();
+            VelocityProfile.addWaypoint(0, 0, -180);
+            VelocityProfile.addWaypoint(-5, -10, -180);
+            VelocityProfile.generatePath(true);
             SmartDashboard.putNumber("Processing Time", processing.get());
             timer.reset();
             timer.start();
@@ -134,14 +134,21 @@ public class Drivetrain {
     public static void setAutoPathSpeed() {
         if(driveMode == DRIVE_MODE.MOTION_DRIVE) {
             VelocityProfile.calculateCurrentVelocities(timer.get());
-            drive(VelocityProfile.getCurrentLeftVelocity() / VelocityProfile.MAX_VELOCITY + getFeedbackTerm(VelocityProfile.getCurrentLeftVelocity(), getLeftVelocity(), true), VelocityProfile.getCurrentRightVelocity() / VelocityProfile.MAX_VELOCITY + getFeedbackTerm(VelocityProfile.getCurrentRightVelocity(), getRightVelocity(), false));
+            drive(VelocityProfile.getCurrentLeftVelocity() / VelocityProfile.MAX_VELOCITY + getVelocityFeedback(VelocityProfile.getCurrentLeftVelocity(), getLeftVelocity()) + getAngleFeedback(true), VelocityProfile.getCurrentRightVelocity() / VelocityProfile.MAX_VELOCITY + getVelocityFeedback(VelocityProfile.getCurrentRightVelocity(), getRightVelocity()) + getAngleFeedback(false));
             if(VelocityProfile.getPathTime() - timer.get() <= 0) driveMode = DRIVE_MODE.CONTROLLER_DRIVE;
             SmartDashboard.putNumber("Gyro Error", getHeading() - VelocityProfile.getCurrentAngle());
             SmartDashboard.putNumber("Expected gyro", VelocityProfile.getCurrentAngle());
         }
     }
-    private static double getFeedbackTerm(double pathVelocity, double currentVelocity, boolean left) {
-        return 0.2 * ((pathVelocity - currentVelocity) / (VelocityProfile.MAX_VELOCITY)) + 0.35 * ((getHeading() - (VelocityProfile.getCurrentAngle())) / 180 * (left ? -1 : 1));
+    private static double getVelocityFeedback(double pathVelocity, double currentVelocity) {
+        return 0.15 * ((pathVelocity - currentVelocity) / (VelocityProfile.MAX_VELOCITY));
+    }
+    private static double getAngleFeedback(boolean left) {
+        if(getHeading() > 170 && VelocityProfile.getCurrentAngle() < -170 || getHeading() < -170 && VelocityProfile.getCurrentAngle() > 170) {
+            double error = (180 - Math.abs(getHeading())) + (180 - Math.abs(VelocityProfile.getCurrentAngle()));
+            return error / 180 * (getHeading() > VelocityProfile.getCurrentAngle() ? (left ? 1 : -1) : (left ? -1 : 1));
+        }
+        return 0.75 * ((getHeading() - (VelocityProfile.getCurrentAngle())) / 180 * (left ? -1 : 1));
     }
 
 
@@ -153,7 +160,7 @@ public class Drivetrain {
         return gyroController.atSetpoint();
     }
 
-    private static double wrapAngle(double angle) {
+    public static double wrapAngle(double angle) {
         if(angle > 180) {
             return -(360 - angle);
         } else if (angle < -180) {

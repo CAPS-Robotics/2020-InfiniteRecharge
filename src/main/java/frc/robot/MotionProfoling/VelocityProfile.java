@@ -1,5 +1,7 @@
 package frc.robot.MotionProfoling;
 
+import frc.robot.Subsystems.Drivetrain;
+
 import java.util.ArrayList;
 
 public class VelocityProfile {
@@ -22,6 +24,7 @@ public class VelocityProfile {
     private static double currentAngle;
 
     private static int index = 1;
+    private static boolean backwards;
 
     private static ArrayList<Double> times;
     private static ArrayList<Double> leftVelocities;
@@ -29,7 +32,8 @@ public class VelocityProfile {
     private static ArrayList<Double> velocities;
     private static ArrayList<Double> angles;
 
-    public static void generatePath() {
+    public static void generatePath(boolean isBackwards) {
+        backwards = isBackwards;
         setPath();
         calculateDistance();
         calculateVelocities();
@@ -160,6 +164,13 @@ public class VelocityProfile {
         currentLeftVelocity = (time - times.get(index - 1)) * leftSlope + leftVelocities.get(index - 1);
         currentRightVelocity = (time - times.get(index - 1)) * rightSlope + rightVelocities.get(index - 1);
         currentAngle = (time - times.get(index - 1)) * angleSlope + angles.get(index - 1);
+
+        if(backwards) {
+            double temp = currentLeftVelocity;
+            currentLeftVelocity = -currentRightVelocity;
+            currentRightVelocity = -temp;
+            currentAngle += currentAngle > 0 ? -180 : 180;
+        }
     }
     public static double getCurrentLeftVelocity() { return currentLeftVelocity; }
     public static double getCurrentRightVelocity() { return currentRightVelocity; }
