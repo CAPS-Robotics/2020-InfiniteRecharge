@@ -1,4 +1,4 @@
-package frc.robot.MotionProfoling;
+package frc.robot.MotionProfiling;
 
 public class Point {
     private double x, y, theta;

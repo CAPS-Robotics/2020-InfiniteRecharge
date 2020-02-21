@@ -7,13 +7,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Controllers;
-import frc.robot.MotionProfoling.Point;
-import frc.robot.MotionProfoling.Spline;
-import frc.robot.MotionProfoling.VelocityProfile;
+import frc.robot.MotionProfiling.VelocityProfile;
 import frc.robot.RobotMap;
 import com.kauailabs.navx.frc.*;
-
-import java.util.ArrayList;
 
 public class Drivetrain {
     private static final double GEARBOX_RATIO = 7;
@@ -33,6 +29,8 @@ public class Drivetrain {
     private static CANSparkMax rightMotorA;
     private static CANSparkMax rightMotorB;
 
+    private static double leftOffset;
+    private static double rightOffset;
     private static PIDController gyroController;
 
     private static Timer timer;
@@ -99,16 +97,20 @@ public class Drivetrain {
     }
 
     public static double getLeftDistance() {
-        return ((leftMotorA.getEncoder().getPosition() + leftMotorB.getEncoder().getPosition()) / 2) / GEARBOX_RATIO * (WHEEL_DIAMETER * Math.PI);
+        return (((leftMotorA.getEncoder().getPosition() + leftMotorB.getEncoder().getPosition()) / 2) - leftOffset) / GEARBOX_RATIO * (WHEEL_DIAMETER * Math.PI) / 12;
     }
     public static double getRightDistance() {
-        return ((rightMotorA.getEncoder().getPosition() + rightMotorB.getEncoder().getPosition()) / 2) / GEARBOX_RATIO * (WHEEL_DIAMETER * Math.PI);
+        return (((rightMotorA.getEncoder().getPosition() + rightMotorB.getEncoder().getPosition()) / 2) - rightOffset) / GEARBOX_RATIO * (WHEEL_DIAMETER * Math.PI) / 12;
     }
     public static double getLeftVelocity() {
         return ((leftMotorA.getEncoder().getVelocity() + leftMotorB.getEncoder().getVelocity()) / 2) / 60 / GEARBOX_RATIO * (WHEEL_DIAMETER * Math.PI) / 12;
     }
     public static double getRightVelocity() {
         return (leftMotorA.getEncoder().getVelocity() + leftMotorB.getEncoder().getVelocity()) / 2 / 60 / GEARBOX_RATIO * (WHEEL_DIAMETER * Math.PI) / 12;
+    }
+    public static void resetEncoders() {
+        leftOffset = (leftMotorA.getEncoder().getPosition() + leftMotorB.getEncoder().getPosition()) / 2;
+        rightOffset = (rightMotorA.getEncoder().getPosition() + rightMotorB.getEncoder().getPosition()) / 2;
     }
 
     public static void setControllerSpeed() {
@@ -122,10 +124,13 @@ public class Drivetrain {
             Timer processing = new Timer();
             processing.start();
             VelocityProfile.reset();
-            VelocityProfile.addWaypoint(0, 0, -180);
-            VelocityProfile.addWaypoint(-5, -10, -180);
-            VelocityProfile.generatePath(true);
+            resetEncoders();
+            VelocityProfile.addWaypoint(0, 0, 0);
+            VelocityProfile.addWaypoint(9, 9, 90);
+            VelocityProfile.addWaypoint(15, 15, 45);
+            VelocityProfile.generatePath(false);
             SmartDashboard.putNumber("Processing Time", processing.get());
+            processing.stop();
             timer.reset();
             timer.start();
             driveMode = DRIVE_MODE.MOTION_DRIVE;
@@ -133,28 +138,32 @@ public class Drivetrain {
     }
     public static void setAutoPathSpeed() {
         if(driveMode == DRIVE_MODE.MOTION_DRIVE) {
-            VelocityProfile.calculateCurrentVelocities(timer.get());
+            VelocityProfile.calculateVelocities((getLeftDistance() + getRightDistance()) / 2 + 0.2);
             drive(VelocityProfile.getCurrentLeftVelocity() / VelocityProfile.MAX_VELOCITY + getVelocityFeedback(VelocityProfile.getCurrentLeftVelocity(), getLeftVelocity()) + getAngleFeedback(true), VelocityProfile.getCurrentRightVelocity() / VelocityProfile.MAX_VELOCITY + getVelocityFeedback(VelocityProfile.getCurrentRightVelocity(), getRightVelocity()) + getAngleFeedback(false));
-            if(VelocityProfile.getPathTime() - timer.get() <= 0) driveMode = DRIVE_MODE.CONTROLLER_DRIVE;
+            SmartDashboard.putNumber("left velocity", VelocityProfile.getCurrentLeftVelocity());
+            if((getLeftDistance() + getRightDistance()) / 2 >= VelocityProfile.getPathDistance()) driveMode = DRIVE_MODE.CONTROLLER_DRIVE;
             SmartDashboard.putNumber("Gyro Error", getHeading() - VelocityProfile.getCurrentAngle());
             SmartDashboard.putNumber("Expected gyro", VelocityProfile.getCurrentAngle());
         }
     }
     private static double getVelocityFeedback(double pathVelocity, double currentVelocity) {
-        return 0.15 * ((pathVelocity - currentVelocity) / (VelocityProfile.MAX_VELOCITY));
+        //return 0.15 * ((pathVelocity - currentVelocity) / (VelocityProfile.MAX_VELOCITY));
+        return 0;
     }
     private static double getAngleFeedback(boolean left) {
-        if(getHeading() > 170 && VelocityProfile.getCurrentAngle() < -170 || getHeading() < -170 && VelocityProfile.getCurrentAngle() > 170) {
+        return 0;
+        /*if(getHeading() > 170 && VelocityProfile.getCurrentAngle() < -170 || getHeading() < -170 && VelocityProfile.getCurrentAngle() > 170) {
             double error = (180 - Math.abs(getHeading())) + (180 - Math.abs(VelocityProfile.getCurrentAngle()));
             return error / 180 * (getHeading() > VelocityProfile.getCurrentAngle() ? (left ? 1 : -1) : (left ? -1 : 1));
         }
-        return 0.75 * ((getHeading() - (VelocityProfile.getCurrentAngle())) / 180 * (left ? -1 : 1));
+        return 0.75 * ((getHeading() - (VelocityProfile.getCurrentAngle())) / 180 * (left ? -1 : 1));*/
     }
 
 
     public static double getHeading() { return wrapAngle(gyro.getFusedHeading() - gyroOffset); }
     public static void resetGyro() {
         gyroOffset = gyro.getFusedHeading();
+        resetEncoders();
     }
     public static boolean atAngle() {
         return gyroController.atSetpoint();

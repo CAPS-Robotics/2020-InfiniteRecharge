@@ -11,4 +11,5 @@ public class RobotMap {
     public static final int INTAKE = 7;
     public static final int SHOOTER_A = 8;
     public static final int SHOOTER_B = 9;
+    public static final int TURRET_A = 10;
 }
