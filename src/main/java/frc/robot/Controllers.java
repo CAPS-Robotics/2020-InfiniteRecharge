@@ -39,9 +39,47 @@ public class Controllers {
             return subsystemController.getRawAxis(4);
         }
     }
-    public static boolean getStartButton(boolean isDriveController) {
+    public static boolean getLeftJoyButton(boolean isDriveController) {
+        if(isDriveController) return driveController.getRawButton(9);
+        else return subsystemController.getRawButton(9);
+    }
+    public static boolean getRightJoyButton(boolean isDriveController) {
+        if(isDriveController) return driveController.getRawButton(10);
+        else return subsystemController.getRawButton(10);
+    }
+
+    public static double getLeftTrigger(boolean isDriveController) {
+        if (isDriveController) return driveController.getRawAxis(2);
+        else return subsystemController.getRawAxis(2);
+    }
+    public static double getRightTrigger(boolean isDriveController) {
+        if (isDriveController) return driveController.getRawAxis(3);
+        else return subsystemController.getRawAxis(3);
+    }
+    public static boolean getLeftStartButton(boolean isDriveController) {
+        if(isDriveController) return driveController.getRawButton(7);
+        else return subsystemController.getRawButton(7);
+    }
+    public static boolean getRightStartButton(boolean isDriveController) {
         if(isDriveController) return driveController.getRawButton(8);
         else return subsystemController.getRawButton(8);
+    }
+
+    public static boolean getPOVUp(boolean isDriveController) {
+        if(isDriveController) return driveController.getPOV() == 0;
+        else return subsystemController.getPOV() == 0;
+    }
+    public static boolean getPOVDown(boolean isDriveController) {
+        if(isDriveController) return driveController.getPOV() == 180;
+        else return subsystemController.getPOV() == 180;
+    }
+    public static boolean getPOVLeft(boolean isDriveController) {
+        if(isDriveController) return driveController.getPOV() == 270;
+        else return subsystemController.getPOV() == 270;
+    }
+    public static boolean getPOVRight(boolean isDriveController) {
+        if(isDriveController) return driveController.getPOV() == 90;
+        else return subsystemController.getPOV() == 90;
     }
 
     public static boolean getAButton(boolean isDriveController) {

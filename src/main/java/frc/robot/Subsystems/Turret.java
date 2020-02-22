@@ -4,10 +4,10 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import frc.robot.RobotMap;
 
 public class Turret {
-    private static WPI_TalonSRX motorA;
+    private static WPI_TalonSRX turretMotor;
 
     public static void init() {
-        motorA = new WPI_TalonSRX(RobotMap.TURRET_A);
+        turretMotor = new WPI_TalonSRX(RobotMap.TURRET);
     }
 
     public static void loop() {
@@ -15,8 +15,9 @@ public class Turret {
     }
 
     public static void setSpeed(double speed) {
-        motorA.set(speed);
+        turretMotor.set(speed);
     }
 
-    public static void stop() {motorA.set(0);}
+    public static void stop() {
+        turretMotor.set(0);}
 }

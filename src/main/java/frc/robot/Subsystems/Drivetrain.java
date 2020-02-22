@@ -61,6 +61,11 @@ public class Drivetrain {
         leftMotorA.getEncoder().setPosition(0);
         rightMotorA.getEncoder().setPosition(0);
 
+        leftMotorA.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        leftMotorB.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        rightMotorA.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        rightMotorB.setIdleMode(CANSparkMax.IdleMode.kBrake);
+
         gyroController = new PIDController(GYRO_P, GYRO_I, GYRO_D, 0.002);
         gyroController.enableContinuousInput(-180, 180);
         gyroController.setIntegratorRange(-0.05, 0.05);
@@ -193,7 +198,7 @@ public class Drivetrain {
         }
     }
     public static void checkResetGyro() {
-        if(Controllers.getStartButton(true)) resetGyro();
+        if(Controllers.getRightStartButton(true)) resetGyro();
     }
     public static void setGyroHeading(double heading) {
         gyroController.reset();
