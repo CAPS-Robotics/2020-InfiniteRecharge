@@ -120,7 +120,9 @@ public class Drivetrain {
 
     public static void setControllerSpeed() {
         if(driveMode == DRIVE_MODE.CONTROLLER_DRIVE) {
-            drive(Controllers.getDeadzone(Controllers.getLeftYAxis(true), 0.30), Controllers.getDeadzone(Controllers.getRightYAxis(true), 0.30));
+            double forwardSpeed = Controllers.getLeftYAxis(true);
+            double sideSpeed = Controllers.getRightXAxis(true);
+            drive(forwardSpeed + sideSpeed, forwardSpeed - sideSpeed);
         }
     }
 
@@ -131,8 +133,7 @@ public class Drivetrain {
             VelocityProfile.reset();
             resetEncoders();
             VelocityProfile.addWaypoint(0, 0, 0);
-            VelocityProfile.addWaypoint(9, 9, 90);
-            VelocityProfile.addWaypoint(15, 15, 45);
+            VelocityProfile.addWaypoint(9, 9, 0);
             VelocityProfile.generatePath(false);
             SmartDashboard.putNumber("Processing Time", processing.get());
             processing.stop();
@@ -184,21 +185,21 @@ public class Drivetrain {
     }
 
     private static void checkTurnButtons() {
-        if(Controllers.getYButton(true)) {
+        if(Controllers.getPOVUp(true)) {
             setGyroHeading(0);
         }
-        if(Controllers.getBButton(true)) {
+        if(Controllers.getPOVRight(true)) {
             setGyroHeading(90);
         }
-        if(Controllers.getAButton(true)) {
+        if(Controllers.getPOVDown(true)) {
             setGyroHeading(180);
         }
-        if(Controllers.getXButton(true)) {
+        if(Controllers.getPOVLeft(true)) {
             setGyroHeading(-90);
         }
     }
     public static void checkResetGyro() {
-        if(Controllers.getRightStartButton(true)) resetGyro();
+        if(Controllers.getLeftJoyButton(true)) resetGyro();
     }
     public static void setGyroHeading(double heading) {
         gyroController.reset();

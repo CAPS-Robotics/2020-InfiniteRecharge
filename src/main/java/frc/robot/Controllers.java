@@ -57,12 +57,12 @@ public class Controllers {
         else return subsystemController.getRawAxis(3);
     }
     public static boolean getLeftStartButton(boolean isDriveController) {
-        if(isDriveController) return driveController.getRawButton(7);
-        else return subsystemController.getRawButton(7);
+        if(isDriveController) return driveController.getRawButtonReleased(7);
+        else return subsystemController.getRawButtonReleased(7);
     }
     public static boolean getRightStartButton(boolean isDriveController) {
-        if(isDriveController) return driveController.getRawButton(8);
-        else return subsystemController.getRawButton(8);
+        if(isDriveController) return driveController.getRawButtonReleased(8);
+        else return subsystemController.getRawButtonReleased(8);
     }
 
     public static boolean getPOVUp(boolean isDriveController) {
@@ -83,20 +83,20 @@ public class Controllers {
     }
 
     public static boolean getAButton(boolean isDriveController) {
-        if(isDriveController) return driveController.getRawButton(1);
-        else return subsystemController.getRawButton(1);
+        if(isDriveController) return driveController.getAButtonReleased();
+        else return subsystemController.getAButtonReleased();
     }
     public static boolean getBButton(boolean isDriveController) {
-        if(isDriveController) return driveController.getRawButton(2);
-        else return subsystemController.getRawButton(2);
+        if(isDriveController) return driveController.getBButtonReleased();
+        else return subsystemController.getBButtonReleased();
     }
     public static boolean getXButton(boolean isDriveController) {
-        if(isDriveController) return driveController.getRawButton(3);
-        else return subsystemController.getRawButton(3);
+        if(isDriveController) return driveController.getXButtonReleased();
+        else return subsystemController.getXButtonReleased();
     }
     public static boolean getYButton(boolean isDriveController) {
-        if(isDriveController) return driveController.getRawButton(4);
-        else return subsystemController.getRawButton(4);
+        if(isDriveController) return driveController.getYButtonReleased();
+        else return subsystemController.getYButtonReleased();
     }
     public static boolean getLeftBumper(boolean isDriveController) {
         if(isDriveController) return driveController.getRawButton(5);
