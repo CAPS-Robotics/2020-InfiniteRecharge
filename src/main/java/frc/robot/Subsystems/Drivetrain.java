@@ -144,7 +144,7 @@ public class Drivetrain {
     }
     public static void setAutoPathSpeed() {
         if(driveMode == DRIVE_MODE.MOTION_DRIVE) {
-            VelocityProfile.calculateVelocities((getLeftDistance() + getRightDistance()) / 2 + 0.2);
+            VelocityProfile.calculateVelocities(timer.get(), (getLeftDistance() + getRightDistance()) / 2 + 0.2);
             drive(VelocityProfile.getCurrentLeftVelocity() / VelocityProfile.MAX_VELOCITY + getVelocityFeedback(VelocityProfile.getCurrentLeftVelocity(), getLeftVelocity()) + getAngleFeedback(true), VelocityProfile.getCurrentRightVelocity() / VelocityProfile.MAX_VELOCITY + getVelocityFeedback(VelocityProfile.getCurrentRightVelocity(), getRightVelocity()) + getAngleFeedback(false));
             SmartDashboard.putNumber("left velocity", VelocityProfile.getCurrentLeftVelocity());
             if((getLeftDistance() + getRightDistance()) / 2 >= VelocityProfile.getPathDistance()) driveMode = DRIVE_MODE.CONTROLLER_DRIVE;
