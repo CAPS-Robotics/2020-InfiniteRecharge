@@ -16,17 +16,6 @@ public class Spline {
         scale = 1.2 * Math.sqrt(Math.pow(x1 - x0, 2) + Math.pow(y1 - y0, 2));
         calculateCoefficients();
     }
-    public Spline(Point p0, Point p1, boolean apx) {
-        this.x0 = p0.getX();
-        this.y0 = p0.getY();
-        this.theta0 = p0.getTheta();
-        this.x1 = p1.getX();
-        this.y1 = p1.getY();
-        this.theta1 = p1.getTheta();
-
-        this.scale = 0.65 * Math.sqrt(Math.pow(x1 - x0, 2) + Math.pow(y1 - y0, 2));
-        calculateCoefficients();
-    }
 
     public void calculateCoefficients() {
         ax = checkZero(-6 * x0 + 6d * x1 - 3d * Math.cos(Math.toRadians(theta0)) * scale - 3d * Math.cos(Math.toRadians(theta1)) * scale);
@@ -107,5 +96,8 @@ public class Spline {
         }
 
         return angle;
+    }
+    public double getLinearDistance() {
+        return Math.sqrt(Math.pow(getX(1) - getX(0), 2) + Math.pow(getY(1) - getY(0), 2));
     }
 }

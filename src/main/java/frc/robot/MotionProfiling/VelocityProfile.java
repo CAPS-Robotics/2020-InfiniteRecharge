@@ -22,6 +22,8 @@ public class VelocityProfile {
     private static double currentRightVelocity;
     private static double currentAngle;
 
+    private static double pLeftDistance;
+    private static double pRightDistance;
     private static double pLeftVelocity;
     private static double pRightVelocity;
     private static double dLeftVelocity;
@@ -51,9 +53,11 @@ public class VelocityProfile {
         points = new ArrayList<>();
         path = new ArrayList<>();
         approximations = new ArrayList<>();
+        pLeftDistance = 0;
+        pRightDistance = 0;
         pLeftVelocity = 0;
         pRightVelocity = 0;
-        pT = -0.01;
+        pT = -0.05;
         pTime = 0;
         pathDistance = 0;
         decelerating = false;
@@ -70,7 +74,7 @@ public class VelocityProfile {
 
         for(int i = 0; i < path.size(); i++) {
             double pDistance = distance;
-            double dt = 0.005;
+            double dt = 0.1 / path.get(i).getLinearDistance();
             for(double t = 0; t <= 1; t += dt) {
                 Spline spline = path.get(i);
                 distance += Math.sqrt(Math.pow(spline.getdx(t), 2) + Math.pow(spline.getdy(t), 2)) * dt;
@@ -86,25 +90,27 @@ public class VelocityProfile {
 
     public static double getPathDistance() { return pathDistance; }
 
-    public static boolean calculateVelocities(double time, double distance) {
-        if(approximations.get(splineIndex).getT(currentDistance) >= splineIndex + 1) {
+    public static void calculateVelocities(double time, double leftDistance, double rightDistance) {
+        double distance = (leftDistance + rightDistance) / 2;
+
+        if(approximations.get(splineIndex).getT(distance) >= splineIndex + 1 && splineIndex < path.size() - 1) {
             splineIndex++;
             pT = 1 - pT;
-            if(splineIndex == path.size()) return true;
         }
 
-        double t = approximations.get(splineIndex).getT(distance) - (int)approximations.get(splineIndex).getT(currentDistance);
+        double t = approximations.get(splineIndex).getT(distance) % 1;
         Spline currentSpline = path.get(splineIndex);
 
         double dt = t - pT;
         double dTime = time - pTime;
 
-        double dLeftDistance = Math.sqrt((Math.pow((currentSpline.getLeftPosY(t) - currentSpline.getLeftPosY(t + dt)) / (currentSpline.getLeftPosX(t) - currentSpline.getLeftPosX(t + dt)), 2) + 1)) * Math.abs(currentSpline.getLeftPosX(t) - currentSpline.getLeftPosX(t + dt));
-        double dRightDistance = Math.sqrt((Math.pow((currentSpline.getRightPosY(t) - currentSpline.getRightPosY(t + dt)) / (currentSpline.getRightPosX(t) - currentSpline.getRightPosX(t + dt)), 2) + 1)) * Math.abs(currentSpline.getRightPosX(t) - currentSpline.getRightPosX(t + dt));
+        double dLeftDistance = leftDistance - pLeftDistance;
+        double dRightDistance = rightDistance - pRightDistance;
 
         currentLeftDistance += dLeftDistance;
         currentRightDistance += dRightDistance;
-        System.out.println(currentRightDistance);
+        pLeftDistance = currentLeftDistance;
+        pRightDistance = currentRightDistance;
 
         double leftVelocity;
         double rightVelocity;
@@ -162,8 +168,6 @@ public class VelocityProfile {
             currentRightVelocity = -temp;
             currentAngle += currentAngle > 0 ? -180 : 180;
         }
-
-        return false;
     }
 
     public static double getCurrentLeftVelocity() { return currentLeftVelocity; }
