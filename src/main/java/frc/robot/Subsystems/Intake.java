@@ -11,7 +11,7 @@ import frc.robot.RobotMap;
 public class Intake {
     private static WPI_TalonSRX intakeMotor;
     private static WPI_TalonSRX wrist;
-    private static final double WRIST_ENCODER_OFFSET = 159.609375;
+    private static final double WRIST_ENCODER_OFFSET = -518.5546875;
 
     private static PIDController wristController;
 
@@ -36,7 +36,7 @@ public class Intake {
         if(Controllers.getLeftBumper(false)) setIntake(0.5);
         else setIntake(0);
 
-        //setWrist(Controllers.getRightYAxis(false));
+        setWrist(Controllers.getRightYAxis(false));
 
         SmartDashboard.putNumber("Wrist Power", wristController.calculate(getWristAngle()));
         SmartDashboard.putNumber("Wrist Target", wristController.getSetpoint());
@@ -46,6 +46,6 @@ public class Intake {
     }
     public static void setWrist (double power) { wrist.set(power); }
     public static double getWristAngle() {
-        return -(wrist.getSensorCollection().getPulseWidthPosition() * 360d / 4096d - WRIST_ENCODER_OFFSET);
+        return -(wrist.getSensorCollection().getPulseWidthPosition() * 360d / 4096d + WRIST_ENCODER_OFFSET);
     }
 }

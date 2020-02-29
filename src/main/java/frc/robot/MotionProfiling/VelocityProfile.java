@@ -1,5 +1,9 @@
 package frc.robot.MotionProfiling;
 
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Subsystems.Drivetrain;
+
 import java.util.ArrayList;
 
 public class VelocityProfile {
@@ -7,49 +11,54 @@ public class VelocityProfile {
     public static final double MAX_ACCELERATION = 12;
     public static final double WHEELBASE = 1.75;
 
-    private static ArrayList<Point> points = new ArrayList<>();
-    private static ArrayList<Spline> path = new ArrayList<>();
-    private static ArrayList<LinearApproximation> approximations = new ArrayList<>();
+    private Timer timer = new Timer();
+    private ArrayList<Point> points = new ArrayList<>();
+    private ArrayList<Spline> path = new ArrayList<>();
+    private ArrayList<LinearApproximation> approximations = new ArrayList<>();
 
-    private static double pathDistance;
-    private static double leftPathDistance;
-    private static double rightPathDistance;
+    private double pathDistance;
+    private double leftPathDistance;
+    private double rightPathDistance;
 
-    private static double currentDistance;
-    private static double currentLeftDistance;
-    private static double currentRightDistance;
-    private static double currentLeftVelocity;
-    private static double currentRightVelocity;
-    private static double currentAngle;
+    private double currentDistance;
+    private double currentLeftDistance;
+    private double currentRightDistance;
+    private double currentLeftVelocity;
+    private double currentRightVelocity;
+    private double currentAngle;
 
-    private static double pLeftDistance;
-    private static double pRightDistance;
-    private static double pLeftVelocity;
-    private static double pRightVelocity;
-    private static double dLeftVelocity;
-    private static double dRightVelocity;
-    public static double pT;
-    private static double pTime;
-    private static boolean decelerating;
-    private static int splineIndex;
+    private double pLeftDistance;
+    private double pRightDistance;
+    private double pLeftVelocity;
+    private double pRightVelocity;
+    private double dLeftVelocity;
+    private double dRightVelocity;
+    public double pT;
+    private double pTime;
+    private boolean decelerating;
+    private int splineIndex;
 
-    private static boolean backwards;
+    private boolean backwards;
 
-    public static void generatePath(boolean isBackwards) {
+    public void generatePath(boolean isBackwards) {
         backwards = isBackwards;
         setPath();
         calculateDistance();
     }
 
-    public static void addWaypoint(double x, double y, double theta) { points.add(new Point(x, y, theta)); }
+    public void addWaypoint(double x, double y, double theta) { points.add(new Point(x, y, theta)); }
 
-    private static void setPath() {
+    private void setPath() {
         for(int i = 0; i < points.size() - 1; i++) {
             path.add(new Spline(points.get(i), points.get(i + 1)));
         }
     }
 
-    public static void reset() {
+    public void startPath() {
+        timer.start();
+        Drivetrain.resetEncoders();
+    }
+    public void reset() {
         points = new ArrayList<>();
         path = new ArrayList<>();
         approximations = new ArrayList<>();
@@ -67,7 +76,7 @@ public class VelocityProfile {
         currentRightDistance = 0;
     }
 
-    private static void calculateDistance() {
+    private void calculateDistance() {
         double distance = 0;
         double leftDistance = 0;
         double rightDistance = 0;
@@ -88,9 +97,12 @@ public class VelocityProfile {
         rightPathDistance = rightDistance;
     }
 
-    public static double getPathDistance() { return pathDistance; }
+    public double getPathDistance() { return pathDistance; }
 
-    public static void calculateVelocities(double time, double leftDistance, double rightDistance) {
+    public boolean calculateVelocities() {
+        double time = timer.get();
+        double leftDistance = Drivetrain.getLeftDistance() * (backwards ? -1 : 1);
+        double rightDistance = Drivetrain.getRightDistance() * (backwards ? -1 : 1);
         double distance = (leftDistance + rightDistance) / 2;
 
         if(approximations.get(splineIndex).getT(distance) >= splineIndex + 1 && splineIndex < path.size() - 1) {
@@ -99,9 +111,9 @@ public class VelocityProfile {
         }
 
         double t = approximations.get(splineIndex).getT(distance) % 1;
+        SmartDashboard.putNumber("t", t);
         Spline currentSpline = path.get(splineIndex);
 
-        double dt = t - pT;
         double dTime = time - pTime;
 
         double dLeftDistance = leftDistance - pLeftDistance;
@@ -168,30 +180,35 @@ public class VelocityProfile {
             currentRightVelocity = -temp;
             currentAngle += currentAngle > 0 ? -180 : 180;
         }
+        double currentVelocity = (currentLeftVelocity + currentRightVelocity);
+        if(currentVelocity <= 0 && !backwards || currentVelocity >= 0 && backwards) return true;
+
+        SmartDashboard.putNumber("Target angle", currentAngle);
+        return false;
     }
 
-    public static double getCurrentLeftVelocity() { return currentLeftVelocity; }
-    public static double getCurrentRightVelocity() { return currentRightVelocity; }
-    public static double getCurrentAngle() { return currentAngle; }
+    public double getCurrentLeftVelocity() { return currentLeftVelocity; }
+    public double getCurrentRightVelocity() { return currentRightVelocity; }
+    public double getCurrentAngle() { return currentAngle; }
 
-    private static double calcMaxVelocity(double pVelocity, double time) {
+    private double calcMaxVelocity(double pVelocity, double time) {
         return pVelocity + MAX_ACCELERATION * time;
     }
-    private static double calcMinVelocity(double pVelocity, double time) {
+    private double calcMinVelocity(double pVelocity, double time) {
         return pVelocity - MAX_ACCELERATION * time;
     }
-    private static double calcInnerWheelVelocity(double outerVelocity, double curvature) {
+    private double calcInnerWheelVelocity(double outerVelocity, double curvature) {
         double turningRadius = Math.abs(1 / curvature);
         return (2 * turningRadius * outerVelocity - WHEELBASE * outerVelocity) / (2 * turningRadius + WHEELBASE);
     }
-    private static double calcOuterWheelVelocity(double innerVelocity, double curvature) {
+    private double calcOuterWheelVelocity(double innerVelocity, double curvature) {
         double turningRadius = Math.abs(1 / curvature);
         return (2 * turningRadius * innerVelocity + WHEELBASE * innerVelocity) / (2 * turningRadius - WHEELBASE);
     }
 
-    private static double calcStoppingDistance(double velocity) {
+    private double calcStoppingDistance(double velocity) {
         return Math.pow(velocity, 2) / (2 * MAX_ACCELERATION);
     }
 
-    public static ArrayList<Spline> getPath() { return path; }
+    public ArrayList<Spline> getPath() { return path; }
 }
