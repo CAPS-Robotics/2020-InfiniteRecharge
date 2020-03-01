@@ -15,7 +15,7 @@ public class Intake {
 
     private static PIDController wristController;
 
-    public static final double WRIST_P = 1/150d;
+    public static final double WRIST_P = 1/180d;
     public static final double WRIST_I = 0;
     public static final double WRIST_D = 0;
 
@@ -28,24 +28,37 @@ public class Intake {
 
         wristController = new PIDController(WRIST_P, WRIST_I, WRIST_D, 0.002);
         wristController.setIntegratorRange(-0.05, 0.05);
-        //wristController.setTolerance(5);
-        //wristController.setSetpoint(getWristAngle());
-        //wristController.enableContinuousInput(-180, 180);
+        wristController.disableContinuousInput();
+        wristController.setTolerance(5);
     }
     public static void loop() {
         if(Controllers.getLeftBumper(false)) setIntake(0.5);
         else setIntake(0);
 
-        setWrist(Controllers.getRightYAxis(false));
+        if(Controllers.getPOVUp(false)) wristUp();
+        else if(Controllers.getPOVDown(false)) wristDown();
+        else setWrist(Controllers.getRightYAxis(false));
 
-        SmartDashboard.putNumber("Wrist Power", wristController.calculate(getWristAngle()));
+        SmartDashboard.putNumber("Wrist Power", -wristController.calculate(getWristAngle()));
         SmartDashboard.putNumber("Wrist Target", wristController.getSetpoint());
     }
     public static void setIntake(double power) {
         intakeMotor.set(power);
     }
     public static void setWrist (double power) { wrist.set(power); }
+    public static void wristUp() {
+        wristController.setSetpoint(90);
+        //setWrist(-wristController.calculate(getWristAngle()));
+    }
+    public static void wristDown() {
+        wristController.setSetpoint(0);
+        //setWrist(-wristController.calculate(getWristAngle()));
+    }
+
     public static double getWristAngle() {
-        return -(wrist.getSensorCollection().getPulseWidthPosition() * 360d / 4096d + WRIST_ENCODER_OFFSET);
+        return wrapAngle(-(wrist.getSensorCollection().getPulseWidthPosition() * 360d / 4096d + WRIST_ENCODER_OFFSET));
+    }
+    private static double wrapAngle(double angle) {
+        return 360 - angle;
     }
 }
