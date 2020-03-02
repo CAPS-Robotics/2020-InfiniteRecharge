@@ -11,9 +11,7 @@ import frc.robot.RobotMap;
 public class Intake {
     private static WPI_TalonSRX intakeMotor;
     private static WPI_TalonSRX wrist;
-    private static final double WRIST_ENCODER_OFFSET = -518.5546875;
-
-    private static PIDController wristController;
+    private static final double WRIST_ENCODER_OFFSET = -160;
 
     public static final double WRIST_P = 1/180d;
     public static final double WRIST_I = 0;
@@ -25,11 +23,6 @@ public class Intake {
 
         wrist.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
         intakeMotor.setInverted(true);
-
-        wristController = new PIDController(WRIST_P, WRIST_I, WRIST_D, 0.002);
-        wristController.setIntegratorRange(-0.05, 0.05);
-        wristController.disableContinuousInput();
-        wristController.setTolerance(5);
     }
     public static void loop() {
         if(Controllers.getLeftBumper(false)) setIntake(0.5);
@@ -39,26 +32,43 @@ public class Intake {
         else if(Controllers.getPOVDown(false)) wristDown();
         else setWrist(Controllers.getRightYAxis(false));
 
-        SmartDashboard.putNumber("Wrist Power", -wristController.calculate(getWristAngle()));
-        SmartDashboard.putNumber("Wrist Target", wristController.getSetpoint());
+        //SmartDashboard.putNumber("Wrist Power", Controllers.getRightYAxis(false));
     }
     public static void setIntake(double power) {
         intakeMotor.set(power);
     }
     public static void setWrist (double power) { wrist.set(power); }
     public static void wristUp() {
-        wristController.setSetpoint(90);
-        //setWrist(-wristController.calculate(getWristAngle()));
+        if(getWristAngle() < 15) {
+            setWrist((90 - getWristAngle()) / 300);
+        } else if(getWristAngle() < 60) {
+            setWrist((90 - getWristAngle()) / 250);
+        }
+        else if(getWristAngle() < 90) {
+            setWrist((90 - getWristAngle()) / 200);
+        } else {
+            setWrist(0);
+        }
     }
+
     public static void wristDown() {
-        wristController.setSetpoint(0);
-        //setWrist(-wristController.calculate(getWristAngle()));
+        if(getWristAngle() > 75) {
+            setWrist(-getWristAngle() / 800);
+        } else if (getWristAngle() > 10) {
+            setWrist(getWristAngle() / 500);
+        } else {
+            SmartDashboard.putNumber("Wrist Power", 0);
+            setWrist(0);
+        }
     }
 
     public static double getWristAngle() {
-        return wrapAngle(-(wrist.getSensorCollection().getPulseWidthPosition() * 360d / 4096d + WRIST_ENCODER_OFFSET));
+        return -wrapAngle((wrist.getSensorCollection().getPulseWidthPosition() * 360d / 4096d + WRIST_ENCODER_OFFSET));
     }
     private static double wrapAngle(double angle) {
-        return 360 - angle;
+        return angle;
+    }
+    public static double getWristCurrent() {
+        return intakeMotor.getSupplyCurrent();
     }
 }

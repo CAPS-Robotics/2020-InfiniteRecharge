@@ -35,6 +35,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Wrist Angle", Intake.getWristAngle());
         SmartDashboard.putNumber("Turret Angle", Turret.getAngle());
         SmartDashboard.putBoolean("Field Orientated", Turret.isFieldOrientated());
+        SmartDashboard.putNumber("Wrist Current", Intake.getWristCurrent());
         Drivetrain.checkResetGyro();
         Turret.checkResetAngle();
     }
