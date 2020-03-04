@@ -13,10 +13,6 @@ public class Intake {
     private static WPI_TalonSRX wrist;
     private static final double WRIST_ENCODER_OFFSET = -160;
 
-    public static final double WRIST_P = 1/180d;
-    public static final double WRIST_I = 0;
-    public static final double WRIST_D = 0;
-
     public static void init() {
         intakeMotor = new WPI_TalonSRX(RobotMap.INTAKE);
         wrist = new WPI_TalonSRX(RobotMap.WRIST);
@@ -25,14 +21,13 @@ public class Intake {
         intakeMotor.setInverted(true);
     }
     public static void loop() {
-        if(Controllers.getLeftBumper(false)) setIntake(0.5);
+        if(Controllers.getLeftBumper(false)) setIntake(0.3);
         else setIntake(0);
 
-        if(Controllers.getPOVUp(false)) wristUp();
-        else if(Controllers.getPOVDown(false)) wristDown();
-        else setWrist(Controllers.getRightYAxis(false));
-
-        //SmartDashboard.putNumber("Wrist Power", Controllers.getRightYAxis(false));
+        if(Controllers.deadzoneExceeded(Controllers.getRightYAxis(false), 0.3)) {
+            if(Controllers.getRightYAxis(false) > 0) wristUp();
+            else wristDown();
+        }
     }
     public static void setIntake(double power) {
         intakeMotor.set(power);

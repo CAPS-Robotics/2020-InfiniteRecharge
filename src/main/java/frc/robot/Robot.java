@@ -36,6 +36,10 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Turret Angle", Turret.getAngle());
         SmartDashboard.putBoolean("Field Orientated", Turret.isFieldOrientated());
         SmartDashboard.putNumber("Wrist Current", Intake.getWristCurrent());
+
+        SmartDashboard.putBoolean("Feeder Front Left", Feeder.getLeftFront());
+        SmartDashboard.putBoolean("Feeder Front Right", Feeder.getRightFront());
+        SmartDashboard.putBoolean("Beam Break", Feeder.getPreRoller());
         Drivetrain.checkResetGyro();
         Turret.checkResetAngle();
     }

@@ -14,4 +14,13 @@ public class RobotMap {
     public static final int TURRET = 10;
     public static final int SHOOTER_A = 11;
     public static final int SHOOTER_B = 12;
+
+    // Analog
+    public static final int FEEDER_LEFT_FRONT = 0;
+    public static final int FEEDER_LEFT_BACK = 1;
+    public static final int FEEDER_RIGHT_FRONT = 2;
+    public static final int FEEDER_RIGHT_BACK = 3;
+
+    // DIO
+    public static final int FEEDER_BEAM_BREAK = 1;
 }

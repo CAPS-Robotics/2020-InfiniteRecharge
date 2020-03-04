@@ -111,4 +111,7 @@ public class Controllers {
         if(Math.abs(joystick) < deadzone) return 0;
         return (Math.abs(joystick) - deadzone) / (1 - deadzone) * Math.abs(joystick) / joystick;
     }
+    public static boolean deadzoneExceeded(double joystick, double threshold) {
+        return Math.abs(joystick) > threshold;
+    }
 }
