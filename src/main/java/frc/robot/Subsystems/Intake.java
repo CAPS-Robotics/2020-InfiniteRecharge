@@ -37,10 +37,10 @@ public class Intake {
         if(getWristAngle() < 15) {
             setWrist((90 - getWristAngle()) / 300);
         } else if(getWristAngle() < 60) {
-            setWrist((90 - getWristAngle()) / 250);
+            setWrist((90 - getWristAngle()) / 200);
         }
         else if(getWristAngle() < 90) {
-            setWrist((90 - getWristAngle()) / 200);
+            setWrist((90 - getWristAngle()) / 150);
         } else {
             setWrist(0);
         }

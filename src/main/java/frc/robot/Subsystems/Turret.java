@@ -9,12 +9,11 @@ import frc.robot.RobotMap;
 
 public class Turret {
     private static double TURRET_OFFSET = 0;
-    private static final double MIN_SPEED = 0.079;
     private static final double TOLERANCE = 5;
     private static WPI_TalonSRX turretMotor;
     private static PIDController turretController;
-    private static final double TURRET_P = 1/495d;
-    private static final double TURRET_I = 0.001;
+    private static final double TURRET_P = 0.0017;
+    private static final double TURRET_I = 0.0015;
     private static final double TURRET_D = 0;
     private static double targetAngle;
     private static boolean fieldOrientated;
@@ -26,7 +25,7 @@ public class Turret {
 
         turretController = new PIDController(TURRET_P, TURRET_I, TURRET_D, 0.002);
         turretController.setTolerance(5);
-        turretController.setIntegratorRange(-0.05, 0.05);
+        //turretController.setIntegratorRange(-0.05, 0.05);
         fieldOrientated = false;
 
         resetAngle();
@@ -40,6 +39,7 @@ public class Turret {
         }  else if(fieldOrientated) {
             turretController.setSetpoint(-Drivetrain.getHeading());
         } else {
+            SmartDashboard.putNumber("Turret Power", turretController.calculate(getAngle()));
             setSpeed(setTurnSpeed());
         }
         if(Controllers.getPOVUp(false)) targetAngle = 0;
@@ -49,6 +49,7 @@ public class Turret {
             if(getAngle() > 0) targetAngle = 180;
             else targetAngle = -180;
         }
+        SmartDashboard.putNumber("Turret Error", turretController.getSetpoint() - getAngle());
     }
 
     private static double setTurnSpeed() {
