@@ -23,7 +23,7 @@ public class Turret {
         turretMotor.setInverted(true);
         turretMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
 
-        turretController = new PIDController(TURRET_P, TURRET_I, TURRET_D, 0.002);
+        turretController = new PIDController(TURRET_P, TURRET_I, TURRET_D, 0.02);
         turretController.setTolerance(5);
         //turretController.setIntegratorRange(-0.05, 0.05);
         fieldOrientated = false;
