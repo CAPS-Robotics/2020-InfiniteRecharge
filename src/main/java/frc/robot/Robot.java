@@ -40,6 +40,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putBoolean("Feeder Front Left", Feeder.getLeftFront());
         SmartDashboard.putBoolean("Feeder Front Right", Feeder.getRightFront());
         SmartDashboard.putBoolean("Beam Break", Feeder.getPreRoller());
+        SmartDashboard.putNumber("Vision distance", Vision.getDistance());
         Drivetrain.checkResetGyro();
         Turret.checkResetAngle();
     }

@@ -21,7 +21,7 @@ public class Intake {
         intakeMotor.setInverted(true);
     }
     public static void loop() {
-        if(Controllers.getLeftBumper(false)) setIntake(0.3);
+        if(Controllers.getLeftBumper(false)) setIntake(0.6);
         else setIntake(0);
 
         if(Controllers.deadzoneExceeded(Controllers.getRightYAxis(false), 0.3)) {

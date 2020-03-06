@@ -40,8 +40,9 @@ public class Feeder {
         backwards = false;
     }
     public static void loop() {
-        leftFeeder.set(Controllers.getLeftTrigger(false) * (backwards ? -1 : 1));
-        rightFeeder.set(Controllers.getRightTrigger(false) * (backwards ? -1 : 1));
+        leftFeeder.set(Controllers.getLeftTrigger(false) * (backwards ? -1 : 1) / 2);
+        rightFeeder.set(Controllers.getRightTrigger(false) * (backwards ? -1 : 1) / 2);
+
         if(Controllers.getRightBumper(false)) preRoller.set(PRE_ROLLER_SPEED);
         else preRoller.set(0);
         if(Controllers.getRightStartButton(false)) backwards = !backwards;
