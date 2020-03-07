@@ -10,7 +10,9 @@ import frc.robot.RobotMap;
 
 public class Feeder {
     private static double SIDE_ROLLER_SPEED = 0.25;
+    private static double SIDE_ROLLER_BACKWARD_SPEED = 0.15;
     private static double PRE_ROLLER_SPEED = 0.25;
+    private static double PRE_ROLLER_BACKWARDS_SPEED = 1;
 
     private static WPI_TalonSRX leftFeeder;
     private static WPI_TalonSRX rightFeeder;
@@ -24,7 +26,7 @@ public class Feeder {
     private static Timer indexTimer;
     private static boolean indexLeft;
     private static boolean indexRight;
-    private static boolean ballSet;
+    private static boolean backwardsDone;
 
     private static DigitalInput beamBreak;
 
@@ -44,7 +46,7 @@ public class Feeder {
         indexTimer = new Timer();
         indexLeft = false;
         indexRight = false;
-        ballSet = false;
+        backwardsDone = false;
 
         preRoller.setInverted(false);
         backwards = false;
@@ -69,8 +71,18 @@ public class Feeder {
         } else if(!getPreRoller() && !indexRight) {
             setLeftSpeed(SIDE_ROLLER_SPEED);
             indexLeft = true;
+        } else if(!isLeftBack()) {
+            setPreRoller(-PRE_ROLLER_BACKWARDS_SPEED);
+            setLeftSpeed(-SIDE_ROLLER_BACKWARD_SPEED);
+            backwards = true;
+            if(isLeftBack()) {
+                backwards = false;
+                backwardsDone = true;
+            }
         } else {
             setLeftSpeed(0);
+            indexLeft = false;
+            backwardsDone = true;
         }
         if(!getRightBack() || !getRightFront()) {
             setRightSpeed(SIDE_ROLLER_SPEED);
@@ -79,23 +91,12 @@ public class Feeder {
             indexRight = true;
         } else {
             setRightSpeed(0);
+            indexRight = false;
+            backwardsDone = true;
         }
-
-        if(!getPreRoller()) setPreRoller(PRE_ROLLER_SPEED);
-        else {
-            /*if(!ballSet) {
-                ballSet = true;
-                indexTimer.reset();
-                indexTimer.start();
-            }
-            if(indexTimer.get() < 0.5) {
-                setPreRoller(PRE_ROLLER_SPEED);
-            } else {
-                indexTimer.stop();
-                setPreRoller(0);
-
-            }*/
-            setPreRoller(0);
+        if(!backwards) {
+            if (!getPreRoller()) setPreRoller(PRE_ROLLER_SPEED);
+            else setPreRoller(0);
         }
     }
 
@@ -110,8 +111,10 @@ public class Feeder {
     }
 
     public static boolean getLeftFront() { return leftFront.getVoltage() > 1.5; }
-    public static boolean getLeftBack() { return leftBack.getVoltage() > 1.5; }
+    public static boolean getLeftBack() { return leftBack.getVoltage() > 2.75; }
     public static boolean getRightFront() { return rightFront.getVoltage() > 1.5; }
-    public static boolean getRightBack() { return rightBack.getVoltage() > 1.5; }
+    public static boolean getRightBack() { return rightBack.getVoltage() > 2.75; }
     public static boolean getPreRoller() { return !beamBreak.get(); }
+    public static boolean isLeftBack() { return leftBack.getVoltage() < 2.75; }
+    public static boolean isRightBack() { return rightBack.getVoltage() < 2.75; }
 }

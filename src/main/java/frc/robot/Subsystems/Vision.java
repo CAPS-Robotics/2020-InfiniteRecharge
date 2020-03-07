@@ -21,8 +21,7 @@ public class Vision {
         public static double getDistance() {
                 return (SHOOTING_HEIGHT - CAMERA_HEIGHT) / (Math.tan(Math.toRadians(CAMERA_ANGLE + table.getEntry("ty").getDouble(0))));
         }
-
-        public static double angleX() {
+        public static double getAngle() {
                 return ( table.getEntry("tx").getDouble(0));
         }
 }

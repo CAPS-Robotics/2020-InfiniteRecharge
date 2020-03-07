@@ -7,13 +7,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Controllers;
 import frc.robot.RobotMap;
 
+import javax.naming.ldap.Control;
+
 public class Turret {
     private static double TURRET_OFFSET = 0;
     private static final double TOLERANCE = 5;
     private static WPI_TalonSRX turretMotor;
     private static PIDController turretController;
-    private static final double TURRET_P = 0.0017;
-    private static final double TURRET_I = 0.0015;
+    private static final double TURRET_P = 0.0060;
+    private static final double TURRET_I = 0;
     private static final double TURRET_D = 0;
     private static double targetAngle;
     private static boolean fieldOrientated;
@@ -25,7 +27,6 @@ public class Turret {
 
         turretController = new PIDController(TURRET_P, TURRET_I, TURRET_D, 0.02);
         turretController.setTolerance(5);
-        //turretController.setIntegratorRange(-0.05, 0.05);
         fieldOrientated = false;
 
         resetAngle();
@@ -36,8 +37,10 @@ public class Turret {
             setSpeed(Controllers.getLeftXAxis(false) / 5);
             turretController.setSetpoint(getAngle());
             targetAngle = getAngle();
-        }  else if(fieldOrientated) {
-            turretController.setSetpoint(-Drivetrain.getHeading());
+        }  else if(Controllers.getLeftJoyButton(false)) {
+            turretController.setSetpoint(Drivetrain.getHeading() + Vision.getAngle());
+            targetAngle = Drivetrain.getHeading() + Vision.getAngle();
+            setSpeed(setTurnSpeed());
         } else {
             SmartDashboard.putNumber("Turret Power", turretController.calculate(getAngle()));
             setSpeed(setTurnSpeed());
