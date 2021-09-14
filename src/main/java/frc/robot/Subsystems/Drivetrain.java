@@ -61,6 +61,7 @@ public class Drivetrain {
         leftMotorA.getEncoder().setPosition(0);
         rightMotorA.getEncoder().setPosition(0);
 
+        //TODO should probably set two of these to coast
         leftMotorA.setIdleMode(CANSparkMax.IdleMode.kBrake);
         leftMotorB.setIdleMode(CANSparkMax.IdleMode.kBrake);
         rightMotorA.setIdleMode(CANSparkMax.IdleMode.kBrake);
