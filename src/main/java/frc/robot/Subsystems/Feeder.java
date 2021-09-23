@@ -3,7 +3,7 @@ package frc.robot.Subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Timer;
+// import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Controllers;
 import frc.robot.RobotMap;
@@ -23,10 +23,10 @@ public class Feeder {
     private static AnalogInput rightFront;
     private static AnalogInput rightBack;
 
-    private static Timer indexTimer;
+    // private static Timer indexTimer;
     private static boolean indexLeft;
     private static boolean indexRight;
-    private static boolean backwardsDone;
+    // private static boolean backwardsDone;
 
     private static DigitalInput beamBreak;
 
@@ -43,10 +43,10 @@ public class Feeder {
         rightBack = new AnalogInput(RobotMap.FEEDER_RIGHT_BACK);
         beamBreak = new DigitalInput(RobotMap.FEEDER_BEAM_BREAK);
 
-        indexTimer = new Timer();
+        // indexTimer = new Timer();
         indexLeft = false;
         indexRight = false;
-        backwardsDone = false;
+        // backwardsDone = false;
 
         preRoller.setInverted(false);
         backwards = false;
@@ -77,12 +77,12 @@ public class Feeder {
             backwards = true;
             if(isLeftBack()) {
                 backwards = false;
-                backwardsDone = true;
+                // backwardsDone = true;
             }
         } else {
             setLeftSpeed(0);
             indexLeft = false;
-            backwardsDone = true;
+            // backwardsDone = true;
         }
         if(!getRightBack() || !getRightFront()) {
             setRightSpeed(SIDE_ROLLER_SPEED);
@@ -92,7 +92,7 @@ public class Feeder {
         } else {
             setRightSpeed(0);
             indexRight = false;
-            backwardsDone = true;
+            // backwardsDone = true;
         }
         if(!backwards) {
             if (!getPreRoller()) setPreRoller(PRE_ROLLER_SPEED);

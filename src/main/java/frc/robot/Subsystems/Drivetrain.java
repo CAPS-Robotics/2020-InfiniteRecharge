@@ -3,7 +3,7 @@ package frc.robot.Subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Timer;
+// import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Controllers;
@@ -34,7 +34,7 @@ public class Drivetrain {
     private static PIDController gyroController;
 
     private static VelocityProfile currentProfile;
-    private static Timer timer;
+    // private static Timer timer;
 
     public static final double GYRO_P = 1/360d;
     public static final double GYRO_I = 1.5;

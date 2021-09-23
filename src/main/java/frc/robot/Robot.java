@@ -21,7 +21,7 @@ public class Robot extends TimedRobot {
         Vision.init();
         Autonomous.init();
 
-        autoPicker = new SendableChooser();
+        autoPicker = new SendableChooser<>();
         autoPicker.addOption("Right Trench", Autonomous.AUTO_STATIONS.RIGHT_TRENCH);
         SmartDashboard.putData(autoPicker);
     }

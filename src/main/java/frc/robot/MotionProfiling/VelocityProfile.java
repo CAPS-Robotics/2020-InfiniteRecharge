@@ -20,7 +20,7 @@ public class VelocityProfile {
     private double leftPathDistance;
     private double rightPathDistance;
 
-    private double currentDistance;
+    // private double currentDistance;
     private double currentLeftDistance;
     private double currentRightDistance;
     private double currentLeftVelocity;
@@ -31,8 +31,8 @@ public class VelocityProfile {
     private double pRightDistance;
     private double pLeftVelocity;
     private double pRightVelocity;
-    private double dLeftVelocity;
-    private double dRightVelocity;
+    // private double dLeftVelocity;
+    // private double dRightVelocity;
     public double pT;
     private double pTime;
     private boolean decelerating;
@@ -71,7 +71,7 @@ public class VelocityProfile {
         pathDistance = 0;
         decelerating = false;
         splineIndex = 0;
-        currentDistance = 0;
+        // currentDistance = 0;
         currentLeftDistance = 0;
         currentRightDistance = 0;
     }
@@ -163,8 +163,8 @@ public class VelocityProfile {
             }
         }
 
-        dLeftVelocity = leftVelocity - pLeftVelocity;
-        dRightVelocity = rightVelocity - pRightVelocity;
+        // dLeftVelocity = leftVelocity - pLeftVelocity;
+        // dRightVelocity = rightVelocity - pRightVelocity;
         pLeftVelocity = leftVelocity;
         pRightVelocity = rightVelocity;
         pT = t;
