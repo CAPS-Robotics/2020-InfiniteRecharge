@@ -20,7 +20,6 @@ public class Drivetrain {
         GYRO_DRIVE
     }
     private static DRIVE_MODE driveMode;
-
     private static AHRS gyro;
     private static double gyroOffset;
 
@@ -75,7 +74,7 @@ public class Drivetrain {
     }
 
     public static void loop() {
-        setControllerSpeed();
+        driveType();
         checkTurnButtons();
         setTurnSpeed();
         setAutoPathSpeed();
@@ -113,13 +112,34 @@ public class Drivetrain {
         rightOffset = (rightMotorA.getEncoder().getPosition() + rightMotorB.getEncoder().getPosition()) / 2;
     }
 
-    public static void setControllerSpeed() {
-        if(driveMode == DRIVE_MODE.CONTROLLER_DRIVE) {
-            double forwardSpeed = Controllers.getLeftYAxis(true);
-            double sideSpeed = Controllers.getRightXAxis(true);
-            drive(forwardSpeed + sideSpeed, forwardSpeed - sideSpeed);
+    public static void driveType() {
+        //boolean driveTestMode = false;
+        if (Controllers.getRightStartButton(true)) {
+            if (driveMode == DRIVE_MODE.TANK_DRIVE) {
+                driveMode = DRIVE_MODE.GENERIC_DRIVE;
+                //driveTestMode = true;
+            } else if (driveMode == DRIVE_MODE.GENERIC_DRIVE) {
+                driveMode = DRIVE_MODE.TANK_DRIVE;
+                //driveTestMode = false;
+            }
         }
-    }
+
+        public static void getDeadZone() {
+            if (driveMode == DRIVE_MODE.TANK_DRIVE) {
+//            double forwardSpeed = Controllers.getLeftYAxis(true);
+//            double sideSpeed = Controllers.getRightXAxis(true);
+//            drive(forwardSpeed + sideSpeed, forwardSpeed - sideSpeed);
+                double leftDeadZone = Controllers.getDeadzone(Controllers.getLeftYAxis(true), .30);
+                double rightDeadZone = Controllers.getDeadzone(Controllers.getRightYAxis(true), .30);
+                drive(leftDeadZone, rightDeadZone);
+            }
+            else if (driveMode == DRIVE_MODE.GENERIC_DRIVE) {
+                double forwardSpeed = Controllers.getLeftYAxis(true);
+                double sideSpeed = Controllers.getRightXAxis(true);
+                drive(forwardSpeed + sideSpeed, forwardSpeed - sideSpeed);
+            }
+
+        }
 
     public static void startProfile(VelocityProfile velocityProfile) {
         currentProfile = velocityProfile;
@@ -193,7 +213,7 @@ public class Drivetrain {
         if (driveMode == DRIVE_MODE.GYRO_DRIVE) {
             drive(gyroController.calculate(getHeading()), -gyroController.calculate(getHeading()));
             if(gyroController.atSetpoint()) {
-                driveMode = DRIVE_MODE.CONTROLLER_DRIVE;
+                driveMode = DRIVE_MODE.TANK_DRIVE;
             }
         }
     }

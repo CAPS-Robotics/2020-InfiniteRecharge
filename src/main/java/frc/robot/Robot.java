@@ -47,6 +47,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Vision distance", Vision.getDistance());
         Drivetrain.checkResetGyro();
         Turret.checkResetAngle();
+
     }
 
     @Override
