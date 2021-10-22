@@ -32,22 +32,26 @@ public class Intake {
     public static void setIntake(double power) {
         intakeMotor.set(power);
     }
-    public static void setWrist (double power) { wrist.set(power); }
-    public static void wristUp() {
-        if(getWristAngle() < 15) {
+    public static void setWrist (double power) {
+        wrist.set(power);
+    }
+        // Below is Rajin's code, we are trying to recode it
+    public static void wristUp ()
+    {
+        if (getWristAngle() < 15) {
             setWrist((90 - getWristAngle()) / 300);
-        } else if(getWristAngle() < 60) {
+
+        } else if (getWristAngle() < 60) {
             setWrist((90 - getWristAngle()) / 200);
-        }
-        else if(getWristAngle() < 90) {
+        } else if (getWristAngle() < 90) {
             setWrist((90 - getWristAngle()) / 150);
         } else {
             setWrist(0);
         }
     }
 
-    public static void wristDown() {
-        if(getWristAngle() > 75) {
+    public static void wristDown () {
+        if (getWristAngle() > 75) {
             setWrist(-getWristAngle() / 800);
         } else if (getWristAngle() > 10) {
             setWrist(getWristAngle() / 500);
@@ -56,14 +60,26 @@ public class Intake {
             setWrist(0);
         }
     }
+ //   turretController.setSetpoint(Drivetrain.getHeading());
+ //   targetAngle = Drivetrain.getHeading();
 
-    public static double getWristAngle() {
+  /*  public static void wristAngle () {
+        if (getWristAngle() > 90) {
+            setWrist(90);
+        }
+        if (getWristAngle() < 0) {
+            setWrist(0);
+        }
+    }
+*/
+    public static double getWristAngle () {
         return -wrapAngle((wrist.getSensorCollection().getPulseWidthPosition() * 360d / 4096d + WRIST_ENCODER_OFFSET));
     }
-    private static double wrapAngle(double angle) {
+    private static double wrapAngle (double angle){
         return angle;
     }
-    public static double getWristCurrent() {
+    public static double getWristCurrent () {
         return intakeMotor.getSupplyCurrent();
     }
-}
+
+    }
