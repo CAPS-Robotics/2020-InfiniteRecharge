@@ -58,6 +58,7 @@ public class Robot extends TimedRobot {
     }
     @Override
     public void autonomousPeriodic() {
+        // mra: Entry from WPILib autonomous mode
         Drivetrain.loop();
         Intake.loop();
         Feeder.loop();
@@ -68,10 +69,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-
+        // mra: Set code here to run prior to teleopPeriodic initiation
     }
     @Override
     public void teleopPeriodic() {
+        // mra: Entry from WPILib teleop mode
         Drivetrain.loop();
         Intake.loop();
         Feeder.loop();

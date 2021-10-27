@@ -35,10 +35,21 @@ public class Intake {
     public static void setWristPower(double power) {
         wrist.set(power);
         wristPower = power;
+        // mra: You may need to wait a few ms - Only do so if the retrieved value below
+        //          is not what you think is correct.
+        // mra: Also return the actual motor speed per the following comment
+        // mra: You will need another output variable, ex. percentMotorSpeedRtv
+        // mra: You'll need to program in a small delay so that you can read the value
+        //         I think you will need Thread.sleep(milSec)
     }
 
     public static double getWristPower(){
-        return wristPower;
+        // mra: You're returning the value that intended to use for percent motor speed.
+        // mra: Instead, return the actual wrist motor speed percent.
+        // mra: To show actual percent, will need to multiply by 100
+        //         percentMotorSpeedRtv = wrist.get()
+         return wristPower;  // mra: Keep this value as it's the intended value
+                            //         It's important to know.
     }
 
 
@@ -47,7 +58,21 @@ public class Intake {
     public static void wristUp ()
     {
         if (getWristAngle() < 25) {
+            // mra: Separate the following out into multiple statements using local variables
+            // mra: Use SmartDashboard to output the local values and then sleep long enough
+            //         to see the values
+
+            // mra: localvar1 = getWristAngle()
+            // mra: Display localvar1 (variable name only intended as an example)
+            // mra: localvar2 = 90 - localvar1
+            // mra: Display localvar2
+            // mra: localvar3 = localvar2 / 300
+            // mra: Display localvar3
+
+            // mra: Then rewrite to setWristPower(localvar3)
             setWristPower((90 - getWristAngle()) / 300);
+
+            // mra: Now get the wrist motor "power" and display it here.
 
      //   } else if (getWristAngle() < 60) {
      //       setWristPower((90 - getWristAngle()) / 200);
