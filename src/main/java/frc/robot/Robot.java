@@ -33,9 +33,12 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Right Velocity", Drivetrain.getRightVelocity());
         SmartDashboard.putNumber("Gyro Heading", Drivetrain.getHeading());
         SmartDashboard.putNumber("Wrist Angle", Intake.getWristAngle());
+        SmartDashboard.putNumber("Wrist Power", Intake.getWristPower());
         SmartDashboard.putNumber("Turret Angle", Turret.getAngle());
         SmartDashboard.putBoolean("Field Orientated", Turret.isFieldOrientated());
         SmartDashboard.putNumber("Wrist Current", Intake.getWristCurrent());
+        SmartDashboard.putNumber("Wrist Current", Intake.getWristCurrent());
+
 
         SmartDashboard.putBoolean("Feeder Front Left", Feeder.getLeftFront());
         SmartDashboard.putBoolean("Feeder Back Left", Feeder.getLeftBack());

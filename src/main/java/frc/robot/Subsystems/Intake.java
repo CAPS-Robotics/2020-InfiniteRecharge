@@ -1,15 +1,14 @@
 package frc.robot.Subsystems;
 
-import com.ctre.phoenix.CANifier;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Controllers;
 import frc.robot.RobotMap;
 
 public class Intake {
     private static WPI_TalonSRX intakeMotor;
+    public static double wristPower;
     private static WPI_TalonSRX wrist;
     private static final double WRIST_ENCODER_OFFSET = -160;
 
@@ -20,44 +19,53 @@ public class Intake {
         wrist.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
         intakeMotor.setInverted(true);
     }
+    // TODO
     public static void loop() {
-        if(Controllers.getLeftBumper(false)) setIntake(0.6);
+        if(Controllers.getLeftBumper(false)) setIntake(0.3);
         else setIntake(0);
 
         if(Controllers.deadzoneExceeded(Controllers.getRightYAxis(false), 0.3)) {
-            if(Controllers.getRightYAxis(false) > 0) wristUp();
-            else wristDown();
+            if(Controllers.getRightYAxis(false) > 35) wristUp();
+            else if (getWristAngle() > -45) wristDown();
         }
     }
     public static void setIntake(double power) {
         intakeMotor.set(power);
     }
-    public static void setWrist (double power) {
+    public static void setWristPower(double power) {
         wrist.set(power);
+        wristPower = power;
     }
-        // Below is Rajin's code, we are trying to recode it
+
+    public static double getWristPower(){
+        return wristPower;
+    }
+
+
+        //this is OUR code
+        // Adjusted hard-coded values "wrist angles" to be actually relevant w/testing
     public static void wristUp ()
     {
-        if (getWristAngle() < 15) {
-            setWrist((90 - getWristAngle()) / 300);
+        if (getWristAngle() < 25) {
+            setWristPower((90 - getWristAngle()) / 300);
 
-        } else if (getWristAngle() < 60) {
-            setWrist((90 - getWristAngle()) / 200);
-        } else if (getWristAngle() < 90) {
-            setWrist((90 - getWristAngle()) / 150);
+     //   } else if (getWristAngle() < 60) {
+     //       setWristPower((90 - getWristAngle()) / 200);
+        } else if (getWristAngle() < -10) {
+            setWristPower((90 - getWristAngle()) / 150);
         } else {
-            setWrist(0);
+            setWristPower(0);
         }
     }
-
+//  TODO Revisit angles
     public static void wristDown () {
-        if (getWristAngle() > 75) {
-            setWrist(-getWristAngle() / 800);
-        } else if (getWristAngle() > 10) {
-            setWrist(getWristAngle() / 500);
-        } else {
+        if (getWristAngle() > 20) {
+            setWristPower(-getWristAngle() / 800);
+        } else if ( 13 < getWristAngle()) {
+            setWristPower(getWristAngle() / 400);
+        } else if (-50 >= getWristAngle()){
             SmartDashboard.putNumber("Wrist Power", 0);
-            setWrist(0);
+            setWristPower(0);
         }
     }
  //   turretController.setSetpoint(Drivetrain.getHeading());
@@ -83,3 +91,4 @@ public class Intake {
     }
 
     }
+
