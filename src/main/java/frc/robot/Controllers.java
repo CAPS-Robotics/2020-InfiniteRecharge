@@ -106,7 +106,10 @@ public class Controllers {
         if(isDriveController) return driveController.getRawButton(6);
         else return subsystemController.getRawButton(6);
     }
-
+    public static boolean getRightJoystickButton(boolean isDriveController) {
+        if (isDriveController) return driveController.getRawButton(10);
+        else return subsystemController.getRawButton(10);
+    }
     public static double getDeadzone(double joystick, double deadzone) {
         if(Math.abs(joystick) < deadzone) return 0;
         return (Math.abs(joystick) - deadzone) / (1 - deadzone) * Math.abs(joystick) / joystick;

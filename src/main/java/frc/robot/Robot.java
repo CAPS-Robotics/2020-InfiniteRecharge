@@ -38,6 +38,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putBoolean("Field Orientated", Turret.isFieldOrientated());
         SmartDashboard.putNumber("Wrist Current", Intake.getWristCurrent());
         SmartDashboard.putNumber("Wrist Current", Intake.getWristCurrent());
+        SmartDashboard.putNumber("Left Y Axis 2", Controllers.getRightYAxis(false));
 
 
         SmartDashboard.putBoolean("Feeder Front Left", Feeder.getLeftFront());

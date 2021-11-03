@@ -11,7 +11,7 @@ import frc.robot.RobotMap;
 
 public class Shooter {
     private static final double MAX_RPM = 10000;
-    private static final double RPM_INCREMENT = 100;
+    private static final double RPM_INCREMENT = 250;
     private static final double SHOOTER_P = 0.00055;
     private static final double SHOOTER_I = 0.00195;
     private static final double SHOOTER_D = 0.000046;

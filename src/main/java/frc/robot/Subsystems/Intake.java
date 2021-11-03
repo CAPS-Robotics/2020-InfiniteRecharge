@@ -21,18 +21,24 @@ public class Intake {
     }
     // TODO
     public static void loop() {
-        if(Controllers.getLeftBumper(false)) setIntake(0.3);
-        else setIntake(0);
+        double rightYAxis = Controllers.getRightYAxis(false);
 
-        if(Controllers.deadzoneExceeded(Controllers.getRightYAxis(false), 0.3)) {
-            if(Controllers.getRightYAxis(false) > 35) wristUp();
-            else if (getWristAngle() > -45) wristDown();
-        }
+        if(Controllers.getRightBumper(true)) setIntakePower(0.5);
+        else if(Controllers.getLeftBumper(true)) setIntakePower(-0.5);
+        else setIntakePower(0);
+
+//        if(Controllers.deadzoneExceeded(rightYAxis, 0.3)) {
+//            if(rightYAxis > 35) wristUp();
+//            else if (getWristAngle() > -45) wristDown();
+//        }
+//Andrew: Logan is saying we need an option to revert intake motors so that balls can leave the way they came in, ask logan to specify if my explanation wasn't good enough
+
     }
-    public static void setIntake(double power) {
+    public static void setIntakePower(double power) {
         intakeMotor.set(power);
     }
     public static void setWristPower(double power) {
+
         wrist.set(power);
         wristPower = power;
         // mra: You may need to wait a few ms - Only do so if the retrieved value below
@@ -52,12 +58,12 @@ public class Intake {
                             //         It's important to know.
     }
 
-
         //this is OUR code
         // Adjusted hard-coded values "wrist angles" to be actually relevant w/testing
     public static void wristUp ()
     {
-        if (getWristAngle() < 25) {
+      setWristPower(-0.5);
+      /*  if (getWristAngle() < 25) {
             // mra: Separate the following out into multiple statements using local variables
             // mra: Use SmartDashboard to output the local values and then sleep long enough
             //         to see the values
@@ -80,18 +86,20 @@ public class Intake {
             setWristPower((90 - getWristAngle()) / 150);
         } else {
             setWristPower(0);
-        }
+        } */
     }
 //  TODO Revisit angles
     public static void wristDown () {
-        if (getWristAngle() > 20) {
+        setWristPower(0.3);
+
+   /*     if (getWristAngle() > 20) {
             setWristPower(-getWristAngle() / 800);
         } else if ( 13 < getWristAngle()) {
             setWristPower(getWristAngle() / 400);
         } else if (-50 >= getWristAngle()){
             SmartDashboard.putNumber("Wrist Power", 0);
             setWristPower(0);
-        }
+        } */
     }
  //   turretController.setSetpoint(Drivetrain.getHeading());
  //   targetAngle = Drivetrain.getHeading();

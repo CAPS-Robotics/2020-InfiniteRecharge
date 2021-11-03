@@ -10,7 +10,7 @@ import frc.robot.RobotMap;
 
 public class Feeder {
     private static double SIDE_ROLLER_SPEED = 0.25;
-    private static double SIDE_ROLLER_BACKWARD_SPEED = 0.15;
+    private static double SIDE_ROLLER_BACKWARD_SPEED = 0.25;
     private static double PRE_ROLLER_SPEED = 0.25;
     private static double PRE_ROLLER_BACKWARDS_SPEED = 1;
 
@@ -58,6 +58,20 @@ public class Feeder {
         if(Controllers.getRightBumper(false)) indexBalls();
         else preRoller.set(0);
         if(Controllers.getRightStartButton(false)) backwards = !backwards;
+
+        if(Controllers.getRightJoystickButton(false)) {
+            setPreRoller(PRE_ROLLER_SPEED);
+        }
+
+        if(Controllers.getLeftBumper(false)) {
+            setPreRoller(-PRE_ROLLER_BACKWARDS_SPEED);
+        }
+        if(Controllers.getLeftJoyButton(false)) {
+            setLeftSpeed(-SIDE_ROLLER_BACKWARD_SPEED);
+        }
+        if(Controllers.getRightJoyButton(false)) {
+            setRightSpeed(-PRE_ROLLER_BACKWARDS_SPEED);
+        }
 
         SmartDashboard.putNumber("Left Front", leftFront.getVoltage());
         SmartDashboard.putNumber("Right Front", rightFront.getVoltage());

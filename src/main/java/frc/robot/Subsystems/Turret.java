@@ -37,11 +37,14 @@ public class Turret {
             setSpeed(Controllers.getLeftXAxis(false) / 5);
             turretController.setSetpoint(getAngle());
             targetAngle = getAngle();
-        }  else if(Controllers.getLeftJoyButton(false)) {
-            turretController.setSetpoint(Drivetrain.getHeading());
-            targetAngle = Drivetrain.getHeading();
-            setSpeed(setTurnSpeed());
-        } else {
+        }
+//        else if(Controllers.getLeftJoyButton(false)) {
+//            turretController.setSetpoint(Drivetrain.getHeading());
+//            targetAngle = Drivetrain.getHeading();
+//            targetAngle = Drivetrain.getHeading();
+//            setSpeed(setTurnSpeed());
+//      }
+        else {
             SmartDashboard.putNumber("Turret Power", turretController.calculate(getAngle()));
             setSpeed(setTurnSpeed());
         }
