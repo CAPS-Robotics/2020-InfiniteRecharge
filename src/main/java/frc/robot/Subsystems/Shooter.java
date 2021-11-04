@@ -11,6 +11,7 @@ import frc.robot.RobotMap;
 
 public class Shooter {
     private static final double MAX_RPM = 10000;
+    private static final double GOOD_RPM = 7000; // what speed we should be shooting at from that mark
     private static final double RPM_INCREMENT = 250;
     private static final double SHOOTER_P = 0.00055;
     private static final double SHOOTER_I = 0.00195;
@@ -35,7 +36,7 @@ public class Shooter {
     public static void loop() {
         if(Controllers.getXButton(false)) targetRPM = 0;
         else if(Controllers.getYButton(false)) targetRPM += RPM_INCREMENT;
-        else if(Controllers.getBButton(false)) targetRPM = MAX_RPM;
+        else if(Controllers.getBButton(false)) targetRPM = GOOD_RPM;
         else if(Controllers.getAButton(false)) targetRPM -= RPM_INCREMENT;
 
         if(targetRPM < 0) targetRPM = 0;
