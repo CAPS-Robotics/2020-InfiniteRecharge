@@ -9,10 +9,10 @@ import frc.robot.Controllers;
 import frc.robot.RobotMap;
 
 public class Feeder {
-    private static double SIDE_ROLLER_SPEED = 0.25;
-    private static double SIDE_ROLLER_BACKWARD_SPEED = 0.25;
-    private static double PRE_ROLLER_SPEED = 0.25;
-    private static double PRE_ROLLER_BACKWARDS_SPEED = 1;
+    private static double SIDE_ROLLER_SPEED = 0.15;
+    private static double SIDE_ROLLER_BACKWARD_SPEED = 0.15;
+    private static double PRE_ROLLER_SPEED = 0.5;
+    private static double PRE_ROLLER_BACKWARDS_SPEED = 0.5;
 
     private static WPI_TalonSRX leftFeeder;
     private static WPI_TalonSRX rightFeeder;
@@ -55,19 +55,21 @@ public class Feeder {
         leftFeeder.set(Controllers.getLeftTrigger(false) * (backwards ? -1 : 1));
         rightFeeder.set(Controllers.getRightTrigger(false) * (backwards ? -1 : 1));
 
-        if(Controllers.getRightBumper(false)) indexBalls();
-        else preRoller.set(0);
-        if(Controllers.getRightStartButton(false)) backwards = !backwards;
+//        if(Controllers.getRightBumper(false)) indexBalls();
+//        else preRoller.set(0);
+//        if(Controllers.getRightStartButton(false)) backwards = !backwards;
 
-        if(Controllers.getRightJoystickButton(false)) {
+        if(Controllers.getRightBumper(false)) {
             setPreRoller(PRE_ROLLER_SPEED);
         }
+        else
+        {setPreRoller(0);}
 
         if(Controllers.getLeftBumper(false)) {
             setPreRoller(-PRE_ROLLER_BACKWARDS_SPEED);
         }
         if(Controllers.getLeftJoyButton(false)) {
-            setLeftSpeed(-SIDE_ROLLER_BACKWARD_SPEED);
+            setLeftSpeed(-SIDE_ROLLER_BACKWARD_SPEED - 0.1);
         }
         if(Controllers.getRightJoyButton(false)) {
             setRightSpeed(-PRE_ROLLER_BACKWARDS_SPEED);

@@ -11,7 +11,7 @@ import frc.robot.RobotMap;
 
 public class Shooter {
     private static final double MAX_RPM = 10000;
-    private static final double GOOD_RPM = 7000; // what speed we should be shooting at from that mark
+    private static final double GOOD_RPM = 8000; // what speed we should be shooting at from that mark
     private static final double RPM_INCREMENT = 250;
     private static final double SHOOTER_P = 0.00055;
     private static final double SHOOTER_I = 0.00195;
